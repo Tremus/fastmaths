@@ -15,6 +15,7 @@ static inline double ankerl64(double a, double b) {
     return u.d;
 }
 
+// NOTE: while loop can cause infinite loops. Not recommended!
 // https://martin.ankerl.com/2012/01/25/optimized-approximative-pow-in-c-and-cpp/
 // should be much more precise with large b
 static inline double ankerl_precise64(double a, double b) {

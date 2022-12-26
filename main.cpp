@@ -11,12 +11,13 @@
 // #include "log.hpp"
 #include "log2.hpp"
 // #include "log10.hpp"
-// #include "pow.hpp"
+#include "pow.hpp"
+#include "pow2.hpp"
 // #include "exp.hpp"
 
 
 template <typename F, typename S>
-void log_hz_to_midi (F func, S name) {
+void log_hz_to_midi (F log2_func, S name) {
     constexpr float frequencies[] = {
         1.0f, 2.0f, 5.0f,
         10.0f, 20.0f, 50.0f,
@@ -26,13 +27,39 @@ void log_hz_to_midi (F func, S name) {
     };
     std::cout << name << " = [";
 
-    auto hz_to_midi = [=](float Hz) { return 69 + func(Hz / 440) * 12; };
+    auto hz_to_midi = [=](float Hz) { return 69 + log2_func(Hz / 440) * 12; };
 
     for (const float Hz : frequencies) {
         std::cout << std::setprecision(12) << hz_to_midi(Hz) << ",";
     }
     std::cout << "]" << std::endl;
+}
 
+template <typename F, typename S>
+void log_midi_to_hz (F pow2_func, S name) {
+    constexpr float midi_notes[] = {
+        -36.376312f, // 1Hz
+        -24.376312f, // 2Hz
+         -8.513184f, // 5Hz
+          3.486816f, // 10Hz
+         15.486820f, // 20Hz
+         31.349960f, // 50Hz
+         43.349960f, // 100Hz
+         55.349960f, // 200Hz
+         71.213097f, // 500Hz
+         83.213097f, // 1kHz
+         95.213097f, // 2kHz
+        111.076233f, // 5kHz
+        123.076233f, // 10kHz
+        135.076233f, // 20kHz
+    };
+    std::cout << name << " = [";
+
+    for (const float midi : midi_notes) {
+        const float hz = 440 * pow2_func((midi - 69) * 0.08333333333333333);
+        std::cout << std::setprecision(12) << hz << ",";
+    }
+    std::cout << "]" << std::endl;
 }
 
 // https://stackoverflow.com/questions/18662261/fastest-implementation-of-sine-cosine-and-square-root-in-c-doesnt-need-to-b
@@ -47,22 +74,6 @@ float gen_random() noexcept {
 volatile float sink{}; // ensures a side effect
 
 int main() {
-    // for (const auto x : {0.001f, 0.1f, 0.5f, 1.0f, 2.0f, 3.14f, 4.f, 5.f, 6.f, 9.f}) {
-    //     const float sin_x = std::sinf(x);
-    //     const float fastSin_x = fastSin(x);
-    //     const float sin_approx_x = sin_approx(x);
-
-    //     const float diff_fastSin = sin_x - fastSin_x;
-    //     const float diff_sin_approx = sin_x - sin_approx_x;
-
-    //     std::cout
-    //         << std::setprecision(12)
-    //         << "x = " << x << '\n'
-    //         << "fastSin_x diff - " << diff_fastSin << '\n'
-    //         << "sin_approx_x diff - " << diff_sin_approx << '\n'
-    //         << "winner - " << (std::abs(diff_sin_approx) < std::abs(diff_fastSin)  ? "sin_approx" : "fastSin") << '\n' << std::endl;
-    // }
-
     auto benchmark = [](auto fun, auto rem) {
         const auto start = std::chrono::high_resolution_clock::now();
         for (auto size{1ULL}; size != 10'000'000ULL; ++size) {
@@ -74,7 +85,8 @@ int main() {
                   << " sec " << rem << std::endl;
     };
 
-    // float hz_to_midi = [](auto log2_func, const float Hz) { return 69 + log2_func(Hz / 440) * 12; };
+    benchmark([](float a) { return a; }, "pass");
+    benchmark([](float a) { return a * a; }, "^2");
 
     /** SINE */
     // benchmark(fast::sin::stl<float>, "stl");
@@ -126,6 +138,7 @@ int main() {
     // benchmark(fast::log::mineiro_faster, "mineiro_faster");
 
     /** LOG2 */
+    /**
     benchmark(fast::log2::stl<float>, "stl");
     benchmark(fast::log2::lgeoffroy, "lgeoffroy");
     benchmark(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
@@ -140,7 +153,6 @@ int main() {
     benchmark(fast::log2::log1_mineiro, "log1_mineiro");
     benchmark(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
 
-/**
     log_hz_to_midi(fast::log2::stl<float>, "stl");
     log_hz_to_midi(fast::log2::lgeoffroy, "lgeoffroy");
     log_hz_to_midi(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
@@ -154,7 +166,7 @@ int main() {
     log_hz_to_midi(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
     log_hz_to_midi(fast::log2::log1_mineiro, "log1_mineiro");
     log_hz_to_midi(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
-*/
+    */
 
     /** LOG10 */
     // benchmark(fast::log10::stl<float>, "stl");
@@ -169,15 +181,31 @@ int main() {
     // benchmark(fast::log10::log1_mineiro_faster, "log1_mineiro_faster");
 
     /** POW */
-    // benchmark([](double a) { return fast::pow::stl<double>(2.0, a); }, "pow");
-    // benchmark([](double a) { return fast::pow::ankerl(2.0, a); }, "ankerl");
-    // benchmark([](double a) { return fast::pow::ankerl_precise(2.0, a); }, "ankerl_precise");
-    // benchmark([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl");
-    // benchmark([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
-    // benchmark([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
-    // benchmark([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
-    // benchmark([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
-    // benchmark([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
+    /**
+    */
+    benchmark([](double a) { return fast::pow::stl<double>(2.0, a); }, "stl64");
+    benchmark([](double a) { return fast::pow::ankerl64(2.0, a); }, "ankerl64");
+    // benchmark([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
+    benchmark([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
+    benchmark([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
+    benchmark([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
+    benchmark([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
+    benchmark([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
+    benchmark([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
+    benchmark([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
+    benchmark([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
+
+    log_midi_to_hz([](double a) { return fast::pow::stl<double>(2.0, a); }, "stl64");
+    log_midi_to_hz([](double a) { return fast::pow::ankerl64(2.0, a); }, "ankerl64");
+    // log_midi_to_hz([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
+    log_midi_to_hz([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
+    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
+    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
+    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
+    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
+    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
+    log_midi_to_hz([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
+    log_midi_to_hz([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
 
     /** EXP */
     // benchmark(fast::exp::stl<float>, "stl");

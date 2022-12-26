@@ -8,28 +8,31 @@ worst 0.15ct.
 Any of the faster functions are only faster by about
 ~7%, while also increasing the margin of error to 30ct
 
-The following table compares the speed and accuracy of
+The following table compares the speed and error margin of
 different log2 approxiamtions used in the following formula:
     69 + log2(Hz / 440) * 12
 
-SEC      %SPEED ERROR  NAME
-0.175968 100.0  0      stl
-0.095747 54.41  bad    log1_njuffa
-0.078736 44.74  bad    newton
-0.077620 44.11  bad    log1_njuffa_faster
-0.076514 43.48  0.0015 log1_mineiro
-0.075569 42.94  0.04   lgeoffroy_accurate
-0.073967 42.03  0.075  lgeoffroy
-0.072461 41.17  0.0015 mineiro
-0.070592 40.11  0.3    log1_mineiro_faster
-0.068189 38.75  0.3    log1_ankerl32
-0.067995 38.64  0.3    mineiro_faster
-0.067818 38.53  1.0    log1_ekmett_lb
-0.064067 36.40  bad    jcook
+SEC      xSPEED ERROR  NAME
+0.055522               pass
+0.175968 1      0      stl
+0.095747 2.99   bad    log1_njuffa
+0.078736 5.18   bad    newton
+0.077620 5.44   bad    log1_njuffa_faster
+0.076514 5.73   0.0015 log1_mineiro
+0.075569 5.99   0.04   lgeoffroy_accurate
+0.073967 6.52   0.075  lgeoffroy
+0.072461 7.09   0.0015 mineiro
+0.070592 7.97   0.3    log1_mineiro_faster
+0.068189 9.48   0.3    log1_ankerl32
+0.067995 9.63   0.3    mineiro_faster
+0.067818 9.77   1.0    log1_ekmett_lb
+0.064067 14.04  bad    jcook
 
-- %Speed is relative to using the standard library function (stl)
+- pass = no processing
+- stl = std::log2
+- xSpeed of the log2 function calculated: (stl_sec - pass) / (other_sec - pass)
 - Error is in semitones. I've recorded approximately the worst error
-  between 1Hz (~-36midi) & 20Khz (~134midi) not the average error
+  between 1Hz (~-36midi) & 20Khz (~135midi) not the average error
 """
 
 class Styles:
