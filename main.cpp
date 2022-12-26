@@ -2,20 +2,20 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <string>
 #include <random>
 
 // #include "sin.hpp"
 // #include "cos.hpp"
 // #include "tanh.hpp"
 // #include "log.hpp"
-#include "log2.hpp"
+// #include "log2.hpp"
 // #include "log10.hpp"
-#include "pow.hpp"
-#include "pow2.hpp"
+// #include "pow.hpp"
+// #include "pow2.hpp"
 // #include "exp.hpp"
 
 
+/**
 template <typename F, typename S>
 void log_hz_to_midi (F log2_func, S name) {
     constexpr float frequencies[] = {
@@ -62,7 +62,23 @@ void log_midi_to_hz (F pow2_func, S name) {
     std::cout << "]" << std::endl;
 }
 
-// https://stackoverflow.com/questions/18662261/fastest-implementation-of-sine-cosine-and-square-root-in-c-doesnt-need-to-b
+template <typename F, typename S>
+void log_normalised_freq(F log_func, S name) noexcept {
+    constexpr float frequencies[] = {
+                  20.0f,   50.0f,
+        100.0f,   200.0f,  500.0f,
+        1000,     2000.0f, 5000.0f,
+        10000.0f, 20000.0f
+    };
+    std::cout << name << " = [";
+
+    for (const float Hz : frequencies) {
+        float normalised = log_func(Hz * 0.05f) * 0.14426950408889633f;
+        std::cout << std::setprecision(12) << normalised << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+*/
 
 float gen_random() noexcept {
     static std::random_device rd;
@@ -128,14 +144,24 @@ int main() {
     // benchmark(fast::tanh::mineiro_faster, "mineiro_faster");
 
     /** LOG */
-    // benchmark(fast::log::stl<float>, "stl");
-    // benchmark(fast::log::logNPlusOne<float>, "logNPlusOne");
-    // benchmark(fast::log::njuffa, "njuffa");
-    // benchmark(fast::log::njuffa_faster, "njuffa_faster");
-    // benchmark(fast::log::ankerl32, "ankerl32");
-    // benchmark(fast::log::ekmett_lb, "ekmett_lb");
-    // benchmark(fast::log::mineiro, "mineiro");
-    // benchmark(fast::log::mineiro_faster, "mineiro_faster");
+    /**
+    benchmark(fast::log::stl<float>, "stl");
+    benchmark(fast::log::logNPlusOne<float>, "logNPlusOne");
+    benchmark(fast::log::njuffa, "njuffa");
+    benchmark(fast::log::njuffa_faster, "njuffa_faster");
+    benchmark(fast::log::ankerl32, "ankerl32");
+    benchmark(fast::log::ekmett_lb, "ekmett_lb");
+    benchmark(fast::log::mineiro, "mineiro");
+    benchmark(fast::log::mineiro_faster, "mineiro_faster");
+    log_normalised_freq(fast::log::stl<float>, "stl");
+    log_normalised_freq(fast::log::logNPlusOne<float>, "logNPlusOne");
+    log_normalised_freq(fast::log::njuffa, "njuffa");
+    log_normalised_freq(fast::log::njuffa_faster, "njuffa_faster");
+    log_normalised_freq(fast::log::ankerl32, "ankerl32");
+    log_normalised_freq(fast::log::ekmett_lb, "ekmett_lb");
+    log_normalised_freq(fast::log::mineiro, "mineiro");
+    log_normalised_freq(fast::log::mineiro_faster, "mineiro_faster");
+    */
 
     /** LOG2 */
     /**
@@ -182,7 +208,6 @@ int main() {
 
     /** POW */
     /**
-    */
     benchmark([](double a) { return fast::pow::stl<double>(2.0, a); }, "stl64");
     benchmark([](double a) { return fast::pow::ankerl64(2.0, a); }, "ankerl64");
     // benchmark([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
@@ -206,6 +231,7 @@ int main() {
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
     log_midi_to_hz([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
     log_midi_to_hz([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
+    */
 
     /** EXP */
     // benchmark(fast::exp::stl<float>, "stl");
