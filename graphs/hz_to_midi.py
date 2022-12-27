@@ -8,6 +8,15 @@ worst 0.15ct.
 Any of the faster functions are only faster by about
 ~7%, while also increasing the margin of error to 30ct
 
+In applications where accuracy is not citical, the
+hz_to_midi algorithm could be modified to reduce the
+error caused by the log2 function.
+eg 1. if there is a linear a negative offset, the
+variable 69 could be incrased by a fraction to 69.3
+eg 2. if there is in exponential offset, the
+multiplication by 12 could be increased or decreased
+by a small fraction.
+
 The following table compares the speed and error margin of
 different log2 approxiamtions used in the following formula:
     69 + log2(Hz / 440) * 12
@@ -26,7 +35,9 @@ SEC      xSPEED ERROR  NAME
 0.068189 9.48   0.3    log1_ankerl32
 0.067995 9.63   0.3    mineiro_faster
 0.067818 9.77   1.0    log1_ekmett_lb
+0.066792 10.68  1.0    desoras
 0.064067 14.04  bad    jcook
+
 
 - pass = no processing
 - stl = std::log2
@@ -72,6 +83,7 @@ log1_ankerl32 = [-36.3405532837,-24.3405456543,-8.84963989258,3.15036010742,15.1
 mineiro_faster = [-36.3487243652,-24.3487243652,-8.85781860352,3.14218139648,15.1421813965,31.505859375,43.505859375,55.505859375,71.3239746094,83.3240661621,95.3240661621,110.733123779,122.733123779,134.733123779,]
 log1_ekmett_lb = [-37.0363616943,-25.0363616943,-9.54545593262,2.45454406738,14.4545440674,30.8181800842,42.8181800842,54.8181800842,70.6363601685,82.6363601685,94.6363601685,110.045455933,122.045455933,134.045455933,]
 # jcook = [34.1881980896,34.3460693359,34.8154525757,35.5838394165,37.0705032349,41.1664161682,46.9815979004,55.886100769,71.2321548462,82.5996017456,91.3581237793,98.3134231567,101.022705078,102.464828491,]
+desoras = [-37.036361694336,-25.036361694336,-9.545455932617,2.454544067383,14.454544067383,30.818183898926,42.818183898926,54.818183898926,70.636360168457,82.636367797852,94.636360168457,110.045455932617,122.045455932617,134.045455932617,]
 
 x = [i for i in range(len(stl))]
 
@@ -84,6 +96,7 @@ ax.plot(log1_mineiro_faster, label='log1_mineiro_faster', linestyle=linestyles.g
 ax.plot(log1_ankerl32, label='log1_ankerl32', linestyle=linestyles.get())
 ax.plot(mineiro_faster, label='mineiro_faster', linestyle=linestyles.get())
 ax.plot(log1_ekmett_lb, label='log1_ekmett_lb', linestyle=linestyles.get())
+ax.plot(desoras, label='desoras', linestyle=linestyles.get())
 
 
 ax.legend()

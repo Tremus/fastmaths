@@ -8,7 +8,7 @@
 // #include "cos.hpp"
 // #include "tanh.hpp"
 // #include "log.hpp"
-// #include "log2.hpp"
+#include "log2.hpp"
 // #include "log10.hpp"
 #include "pow.hpp"
 #include "pow2.hpp"
@@ -175,6 +175,7 @@ int main() {
 
     /** LOG2 */
     /**
+    */
     benchmark(fast::log2::stl<float>, "stl");
     benchmark(fast::log2::lgeoffroy, "lgeoffroy");
     benchmark(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
@@ -182,6 +183,7 @@ int main() {
     benchmark(fast::log2::mineiro, "mineiro");
     benchmark(fast::log2::mineiro_faster, "mineiro_faster");
     benchmark(fast::log2::newton, "newton");
+    benchmark(fast::log2::desoras, "desoras");
     benchmark(fast::log2::log1_njuffa, "log1_njuffa");
     benchmark(fast::log2::log1_njuffa_faster, "log1_njuffa_faster");
     benchmark(fast::log2::log1_ankerl32, "log1_ankerl32");
@@ -196,13 +198,13 @@ int main() {
     log_hz_to_midi(fast::log2::mineiro, "mineiro");
     log_hz_to_midi(fast::log2::mineiro_faster, "mineiro_faster");
     log_hz_to_midi(fast::log2::newton, "newton");
+    log_hz_to_midi(fast::log2::desoras, "desoras");
     log_hz_to_midi(fast::log2::log1_njuffa, "log1_njuffa");
     log_hz_to_midi(fast::log2::log1_njuffa_faster, "log1_njuffa_faster");
     log_hz_to_midi(fast::log2::log1_ankerl32, "log1_ankerl32");
     log_hz_to_midi(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
     log_hz_to_midi(fast::log2::log1_mineiro, "log1_mineiro");
     log_hz_to_midi(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
-    */
 
     /** LOG10 */
     // benchmark(fast::log10::stl<float>, "stl");
