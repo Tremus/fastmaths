@@ -10,12 +10,11 @@
 // #include "log.hpp"
 // #include "log2.hpp"
 // #include "log10.hpp"
-// #include "pow.hpp"
-// #include "pow2.hpp"
-// #include "exp.hpp"
+#include "pow.hpp"
+#include "pow2.hpp"
+#include "exp.hpp"
 
 
-/**
 template <typename F, typename S>
 void log_hz_to_midi (F log2_func, S name) {
     constexpr float frequencies[] = {
@@ -56,7 +55,7 @@ void log_midi_to_hz (F pow2_func, S name) {
     std::cout << name << " = [";
 
     for (const float midi : midi_notes) {
-        const float hz = 440 * pow2_func((midi - 69) * 0.08333333333333333);
+        const float hz = 440.0f * pow2_func((midi - 69.0f) * 0.083333f);
         std::cout << std::setprecision(12) << hz << ",";
     }
     std::cout << "]" << std::endl;
@@ -78,7 +77,18 @@ void log_normalised_freq(F log_func, S name) noexcept {
     }
     std::cout << "]" << std::endl;
 }
-*/
+
+template <typename F, typename S>
+void log_denormalised_freq(F pow_func, S name) noexcept {
+    constexpr float values[] = {0.0f,0.1f,0.2f,0.3f,0.4f,0.5f,0.6f,0.7f,0.8f,0.9f,1.0f};
+    std::cout << name << " = [";
+
+    for (const float v : values) {
+        float denormalised = 20 * pow_func(v * 10);
+        std::cout << std::setprecision(12) << denormalised << ",";
+    }
+    std::cout << "]" << std::endl;
+}
 
 float gen_random() noexcept {
     static std::random_device rd;
@@ -208,20 +218,28 @@ int main() {
 
     /** POW */
     /**
-    benchmark([](double a) { return fast::pow::stl<double>(2.0, a); }, "stl64");
-    benchmark([](double a) { return fast::pow::ankerl64(2.0, a); }, "ankerl64");
-    // benchmark([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
+    benchmark([](float a) { return (float)fast::pow::stl<double>(2.0, a); }, "stl64");
+    benchmark([](float a) { return (float)fast::pow::ankerl64(2.0, a); }, "ankerl64");
+    // benchmark([](float a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
     benchmark([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
     benchmark([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
     benchmark([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
     benchmark([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
     benchmark([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
     benchmark([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
+    benchmark([](float a) { return fast::pow2::stl<float>(a); }, "exp2");
     benchmark([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
     benchmark([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
+    benchmark([](float a) { return fast::pow2::schraudolph(a); }, "schraudolph");
+    benchmark([](float a) { return (float)fast::pow2::desoras(a); }, "desoras");
+    benchmark([](float a) { return fast::exp::stl(a * 0.6931471805599453f); }, "exp");
+    benchmark([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
 
-    log_midi_to_hz([](double a) { return fast::pow::stl<double>(2.0, a); }, "stl64");
-    log_midi_to_hz([](double a) { return fast::pow::ankerl64(2.0, a); }, "ankerl64");
+    log_midi_to_hz([](float a) { return (float)fast::pow2::desoras(a); }, "desoras");
+    log_midi_to_hz([](float a) { return fast::pow2::schraudolph(a); }, "schraudolph");
+    log_midi_to_hz([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
+    log_midi_to_hz([](float a) { return (float)fast::pow::stl<double>(2.0, a); }, "stl64");
+    log_midi_to_hz([](float a) { return (float)fast::pow::ankerl64(2.0, a); }, "ankerl64");
     // log_midi_to_hz([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
     log_midi_to_hz([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
@@ -230,7 +248,15 @@ int main() {
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
     log_midi_to_hz([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
-    log_midi_to_hz([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
+
+    log_denormalised_freq([](float x) { return fast::pow::stl<float>(2.f, x); }, "stl32");
+    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast(2.f, x); }, "ekmett_fast");
+    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_lb(2.f, x); }, "ekmett_fast_lb");
+    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_ub(2.f, x); }, "ekmett_fast_ub");
+    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_precise(2.f, x); }, "ekmett_fast_precise");
+    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_better_precise(2.f, x); }, "ekmett_fast_better_precise");
+    log_denormalised_freq([](float x) { return fast::pow2::mineiro(x); }, "mineiro");
+    log_denormalised_freq([](float x) { return fast::pow2::mineiro_faster(x); }, "mineiro_faster");
     */
 
     /** EXP */
@@ -239,5 +265,4 @@ int main() {
     // benchmark(fast::exp::schraudolph, "schraudolph");
     // benchmark(fast::exp::mineiro, "mineiro");
     // benchmark(fast::exp::mineiro_faster, "mineiro_faster");
-
 }

@@ -1,4 +1,5 @@
-#include "pow2.hpp"
+#pragma once
+#include "common.hpp"
 
 namespace fast {
 namespace exp {
@@ -24,12 +25,24 @@ static inline float schraudolph(float a) noexcept {
 }
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastexp.h
-static inline float mineiro (float p) noexcept {
-    return pow2::mineiro (1.442695040f * p);
+static inline float mineiro (float x) noexcept {
+    // return pow2::mineiro (1.442695040f * p);
+    float p = 1.442695040f * x;
+    float offset = (p < 0) ? 1.0f : 0.0f;
+    float clipp = (p < -126) ? -126.0f : p;
+    int w = (int)clipp;
+    float z = clipp - w + offset;
+    union { uint32_t i; float f; } v = { static_cast<uint32_t> ( (1 << 23) * (clipp + 121.2740575f + 27.7280233f / (4.84252568f - z) - 1.49012907f * z) ) };
+
+    return v.f;
 }
 
-static inline float mineiro_faster (float p) noexcept {
-    return pow2::mineiro (1.442695040f * p);
+static inline float mineiro_faster (float x) noexcept {
+    // return pow2::mineiro_faster (1.442695040f * p);
+    float p = 1.442695040f * x;
+    float clipp = (p < -126) ? -126.0f : p;
+    union { uint32_t i; float f; } v = { static_cast<uint32_t> ( (1 << 23) * (clipp + 126.94269504f) ) };
+    return v.f;
 }
 
 } // namespace exp

@@ -92,11 +92,11 @@ static inline float ekmett_fast_precise(float a, float b) {
 // https://github.com/ekmett/approximate/blob/master/cbits/fast.c
 /* should be much more precise with large b */
 // slower than stl
-static inline double __better_expf_fast(float a) {
-  union { float f; int x; } u, v;
-  u.x = (long long)(6051102 * a + 1056478197);
-  v.x = (long long)(1056478197 - 6051102 * a);
-  return u.f / v.f;
+static inline float __better_expf_fast(float a) {
+    union { float f; int x; } u, v;
+    u.x = (int)(6051102 * a + 1056478197);
+    v.x = (int)(1056478197 - 6051102 * a);
+    return u.f / v.f;
 }
 static inline float ekmett_fast_better_precise(float a, float b) {
     int flipped = 0;
@@ -107,7 +107,7 @@ static inline float ekmett_fast_better_precise(float a, float b) {
 
     /* calculate approximation with fraction of the exponent */
     int e = (int) b;
-    float f = (float)__better_expf_fast(b - e);
+    float f = __better_expf_fast(b - e);
 
     float r = 1.0f;
     while (e) {

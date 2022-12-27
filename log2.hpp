@@ -9,7 +9,6 @@ namespace log2 {
 template<typename T>
 constexpr T stl(T x) noexcept { return std::log2(x); }
 
-// ~58% faster than std::log2
 // https://stackoverflow.com/questions/9411823/fast-log2float-x-implementation-c/28730362#28730362
 static inline float lgeoffroy(float val) {
     union { float val; int32_t x; } u = { val };
@@ -56,8 +55,7 @@ static inline float newton(float x) noexcept {
 }
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastlog.h
-static inline float mineiro(float x)
-{
+static inline float mineiro(float x) {
   union { float f; uint32_t i; } vx = { x };
   union { uint32_t i; float f; } mx = { (vx.i & 0x007FFFFF) | 0x3f000000 };
   float y = vx.i;
@@ -69,12 +67,25 @@ static inline float mineiro(float x)
 }
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastlog.h
-static inline float mineiro_faster (float x)
-{
+static inline float mineiro_faster (float x) noexcept {
     union { float f; uint32_t i; } vx = { x };
     float y = vx.i;
     y *= 1.1920928955078125e-7f;
     return y - 126.94269504f;
+}
+
+// https://www.musicdsp.org/en/latest/Other/63-fast-log2.html
+static inline float desoras (float val) noexcept {
+    // assert (val > 0);
+
+    int * const  exp_ptr = reinterpret_cast <int*> (&val);
+    int          x = *exp_ptr;
+    const int    log_2 = ((x >> 23) & 255) - 128;
+    x &= ~(255 << 23);
+    x += 127 << 23;
+    *exp_ptr = x;
+
+    return (val + log_2);
 }
 
 static constexpr float log2e = 1.4426950408888495f;
