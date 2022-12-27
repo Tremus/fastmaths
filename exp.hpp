@@ -26,7 +26,7 @@ static inline float schraudolph(float a) noexcept {
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastexp.h
 static inline float mineiro (float x) noexcept {
-    // return pow2::mineiro (1.442695040f * p);
+    // return exp2::mineiro (1.442695040f * p);
     float p = 1.442695040f * x;
     float offset = (p < 0) ? 1.0f : 0.0f;
     float clipp = (p < -126) ? -126.0f : p;
@@ -38,7 +38,7 @@ static inline float mineiro (float x) noexcept {
 }
 
 static inline float mineiro_faster (float x) noexcept {
-    // return pow2::mineiro_faster (1.442695040f * p);
+    // return exp2::mineiro_faster (1.442695040f * p);
     float p = 1.442695040f * x;
     float clipp = (p < -126) ? -126.0f : p;
     union { uint32_t i; float f; } v = { static_cast<uint32_t> ( (1 << 23) * (clipp + 126.94269504f) ) };

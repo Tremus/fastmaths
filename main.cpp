@@ -11,7 +11,7 @@
 #include "log2.hpp"
 // #include "log10.hpp"
 #include "pow.hpp"
-#include "pow2.hpp"
+#include "exp2.hpp"
 #include "exp.hpp"
 
 
@@ -175,7 +175,6 @@ int main() {
 
     /** LOG2 */
     /**
-    */
     benchmark(fast::log2::stl<float>, "stl");
     benchmark(fast::log2::lgeoffroy, "lgeoffroy");
     benchmark(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
@@ -205,6 +204,7 @@ int main() {
     log_hz_to_midi(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
     log_hz_to_midi(fast::log2::log1_mineiro, "log1_mineiro");
     log_hz_to_midi(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
+    */
 
     /** LOG10 */
     // benchmark(fast::log10::stl<float>, "stl");
@@ -229,16 +229,16 @@ int main() {
     benchmark([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
     benchmark([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
     benchmark([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
-    benchmark([](float a) { return fast::pow2::stl<float>(a); }, "exp2");
-    benchmark([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
-    benchmark([](float a) { return fast::pow2::mineiro_faster(a); }, "mineiro_faster");
-    benchmark([](float a) { return fast::pow2::schraudolph(a); }, "schraudolph");
-    benchmark([](float a) { return (float)fast::pow2::desoras(a); }, "desoras");
+    benchmark([](float a) { return fast::exp2::stl<float>(a); }, "exp2");
+    benchmark([](float a) { return fast::exp2::mineiro(a); }, "mineiro");
+    benchmark([](float a) { return fast::exp2::mineiro_faster(a); }, "mineiro_faster");
+    benchmark([](float a) { return fast::exp2::schraudolph(a); }, "schraudolph");
+    benchmark([](float a) { return (float)fast::exp2::desoras(a); }, "desoras");
     benchmark([](float a) { return fast::exp::stl(a * 0.6931471805599453f); }, "exp");
     benchmark([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
 
-    log_midi_to_hz([](float a) { return (float)fast::pow2::desoras(a); }, "desoras");
-    log_midi_to_hz([](float a) { return fast::pow2::schraudolph(a); }, "schraudolph");
+    log_midi_to_hz([](float a) { return (float)fast::exp2::desoras(a); }, "desoras");
+    log_midi_to_hz([](float a) { return fast::exp2::schraudolph(a); }, "schraudolph");
     log_midi_to_hz([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
     log_midi_to_hz([](float a) { return (float)fast::pow::stl<double>(2.0, a); }, "stl64");
     log_midi_to_hz([](float a) { return (float)fast::pow::ankerl64(2.0, a); }, "ankerl64");
@@ -249,7 +249,7 @@ int main() {
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
     log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
-    log_midi_to_hz([](float a) { return fast::pow2::mineiro(a); }, "mineiro");
+    log_midi_to_hz([](float a) { return fast::exp2::mineiro(a); }, "mineiro");
 
     log_denormalised_freq([](float x) { return fast::pow::stl<float>(2.f, x); }, "stl32");
     log_denormalised_freq([](float x) { return fast::pow::ekmett_fast(2.f, x); }, "ekmett_fast");
@@ -257,8 +257,8 @@ int main() {
     log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_ub(2.f, x); }, "ekmett_fast_ub");
     log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_precise(2.f, x); }, "ekmett_fast_precise");
     log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_better_precise(2.f, x); }, "ekmett_fast_better_precise");
-    log_denormalised_freq([](float x) { return fast::pow2::mineiro(x); }, "mineiro");
-    log_denormalised_freq([](float x) { return fast::pow2::mineiro_faster(x); }, "mineiro_faster");
+    log_denormalised_freq([](float x) { return fast::exp2::mineiro(x); }, "mineiro");
+    log_denormalised_freq([](float x) { return fast::exp2::mineiro_faster(x); }, "mineiro_faster");
     */
 
     /** EXP */

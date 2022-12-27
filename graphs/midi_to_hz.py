@@ -29,8 +29,8 @@ SEC      xSPEED ERROR  NAME
 
 
 - pass = no processing
-- stl = std::pow(2, x)
-- xSpeed of the pow2 function calculated: (stl_sec - pass) / (other_sec - pass)
+- stl = exp2
+- xSpeed of the exp2 function calculated: (stl_sec - pass) / (other_sec - pass)
 - Error is in Hz
 """
 

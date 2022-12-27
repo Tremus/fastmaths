@@ -1,7 +1,7 @@
 // 2^x or pow(2, x)
 
 namespace fast {
-namespace pow2 {
+namespace exp2 {
 
 template<typename T>
 static inline T stl(T a) noexcept { return std::exp2(a); }
@@ -50,5 +50,5 @@ static double desoras (const double val) noexcept {
     return (ret);
 }
 
-} // namespace pow2
+} // namespace exp2
 } // namespace fast

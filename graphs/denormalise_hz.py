@@ -33,8 +33,8 @@ SEC      xSPEED ERROR  NAME
 0.061775 4.09   14     mineiro_faster     -- error of 750 close to 20kHz, 0.5Hz close to 20Hz. Will result in a couple pixels offset
 
 - pass = no processing
-- stl = std::pow(2, x)
-- xSpeed of the pow2 function calculated: (stl_sec - pass) / (other_sec - pass)
+- stl = exp2
+- xSpeed of the exp2 function calculated: (stl_sec - pass) / (other_sec - pass)
 - Error is in Hz
 """
 

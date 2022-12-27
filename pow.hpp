@@ -123,5 +123,5 @@ static inline float ekmett_fast_better_precise(float a, float b) {
 }
 
 
-} // namespace pow2
+} // namespace pow
 } // namespace fast
