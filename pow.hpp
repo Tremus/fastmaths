@@ -3,8 +3,7 @@
 namespace fast {
 namespace pow {
 
-template<typename T>
-constexpr T stl(T a, T b) noexcept { return std::pow(a, b); }
+static inline float stl(float a, float b) noexcept { return std::powf(a, b); }
 
 // https://martin.ankerl.com/2007/10/04/optimized-pow-approximation-for-java-and-c-c/
 // meant for doubles

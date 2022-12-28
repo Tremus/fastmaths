@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 """
-Paul Mineiro's log2 function is the clear winner.
-the margin of error when converting Hz to midi is at
-worst 0.15ct.
+Paul Mineiro's log2 function is the clear winner in both
+speed and accuracy. The margin of error when converting
+Hz to midi is at worst 0.15ct.
 Any of the faster functions are only faster by about
 ~7%, while also increasing the margin of error to 30ct
 
@@ -16,6 +16,7 @@ variable 69 could be incrased by a fraction to 69.3
 eg 2. if there is in exponential offset, the
 multiplication by 12 could be increased or decreased
 by a small fraction.
+The De Soras algorithm seems best suited for this.
 
 The following table compares the speed and error margin of
 different log2 approxiamtions used in the following formula:

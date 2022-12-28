@@ -80,7 +80,18 @@ void log_normalised_freq(F log_func, S name) noexcept {
 
 template <typename F, typename S>
 void log_denormalised_freq(F pow_func, S name) noexcept {
-    constexpr float values[] = {0.0f,0.1f,0.2f,0.3f,0.4f,0.5f,0.6f,0.7f,0.8f,0.9f,1.0f};
+    constexpr float values[] = {
+        0.0f, 0.025f, 0.05f, 0.075f,
+        0.1f, 0.125f, 0.15f, 0.175f,
+        0.2f, 0.225f, 0.25f, 0.275f,
+        0.3f, 0.325f, 0.35f, 0.375f,
+        0.4f, 0.425f, 0.45f, 0.475f,
+        0.5f, 0.525f, 0.55f, 0.575f,
+        0.6f, 0.625f, 0.65f, 0.675f,
+        0.7f, 0.725f, 0.75f, 0.775f,
+        0.8f, 0.825f, 0.85f, 0.875f,
+        0.9f, 0.925f, 0.95f, 0.975f,
+        1.0f};
     std::cout << name << " = [";
 
     for (const float v : values) {
@@ -111,8 +122,8 @@ int main() {
                   << " sec " << rem << std::endl;
     };
 
-    benchmark([](float a) { return a; }, "pass");
-    benchmark([](float a) { return a * a; }, "^2");
+    benchmark([](float x) { return x; }, "pass");
+    benchmark([](float x) { return x * x; }, "x^2");
 
     /** SINE */
     // benchmark(fast::sin::stl<float>, "stl");
@@ -218,47 +229,59 @@ int main() {
     // benchmark(fast::log10::log1_mineiro, "log1_mineiro");
     // benchmark(fast::log10::log1_mineiro_faster, "log1_mineiro_faster");
 
-    /** POW */
+    /** EXP2 */
     /**
-    benchmark([](float a) { return (float)fast::pow::stl<double>(2.0, a); }, "stl64");
-    benchmark([](float a) { return (float)fast::pow::ankerl64(2.0, a); }, "ankerl64");
-    // benchmark([](float a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
-    benchmark([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
-    benchmark([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
-    benchmark([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
-    benchmark([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
-    benchmark([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
-    benchmark([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
-    benchmark([](float a) { return fast::exp2::stl<float>(a); }, "exp2");
-    benchmark([](float a) { return fast::exp2::mineiro(a); }, "mineiro");
-    benchmark([](float a) { return fast::exp2::mineiro_faster(a); }, "mineiro_faster");
-    benchmark([](float a) { return fast::exp2::schraudolph(a); }, "schraudolph");
-    benchmark([](float a) { return (float)fast::exp2::desoras(a); }, "desoras");
-    benchmark([](float a) { return fast::exp::stl(a * 0.6931471805599453f); }, "exp");
-    benchmark([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
+    benchmark([](float x) { return fast::exp2::stl(x); }, "exp2");
+    benchmark([](float x) { return fast::exp2::mineiro(x); }, "mineiro");
+    benchmark([](float x) { return fast::exp2::mineiro_faster(x); }, "mineiro_faster");
+    benchmark([](float x) { return fast::exp2::schraudolph(x); }, "schraudolph");
+    benchmark([](float x) { return (float)fast::exp2::desoras(x); }, "desoras");
+    benchmark([](float x) { return (float)fast::exp2::desoras_pos(x); }, "desoras_pos");
+    benchmark([](float x) { return fast::exp2::powx_stl(x); }, "powx_stl");
+    benchmark([](float x) { return fast::exp2::powx_ekmett_fast(x); }, "powx_ekmett_fast");
+    benchmark([](float x) { return fast::exp2::powx_ekmett_fast_lb(x); }, "powx_ekmett_fast_lb");
+    benchmark([](float x) { return fast::exp2::powx_ekmett_fast_ub(x); }, "powx_ekmett_fast_ub");
+    benchmark([](float x) { return fast::exp2::powx_ekmett_fast_precise(x); }, "powx_ekmett_fast_precise");
+    benchmark([](float x) { return fast::exp2::powx_ekmett_fast_better_precise(x); }, "powx_ekmett_fast_better_precise");
+    benchmark([](float x) { return fast::exp2::exp_stl(x); }, "exp_stl");
+    benchmark([](float x) { return fast::exp2::exp_ekmett_ub(x); }, "exp_ekmett_ub");
+    benchmark([](float x) { return fast::exp2::exp_schraudolph(x); }, "exp_schraudolph");
+    benchmark([](float x) { return fast::exp2::exp_mineiro(x); }, "exp_mineiro");
+    benchmark([](float x) { return fast::exp2::exp_mineiro_faster(x); }, "exp_mineiro_faster");
 
-    log_midi_to_hz([](float a) { return (float)fast::exp2::desoras(a); }, "desoras");
-    log_midi_to_hz([](float a) { return fast::exp2::schraudolph(a); }, "schraudolph");
-    log_midi_to_hz([](float a) { return fast::exp::ekmett_ub(a * 0.6931471805599453f); }, "exp_ekmett_ub");
-    log_midi_to_hz([](float a) { return (float)fast::pow::stl<double>(2.0, a); }, "stl64");
-    log_midi_to_hz([](float a) { return (float)fast::pow::ankerl64(2.0, a); }, "ankerl64");
-    // log_midi_to_hz([](double a) { return fast::pow::ankerl_precise64(2.0, a); }, "ankerl_precise64");
-    log_midi_to_hz([](float a) { return fast::pow::stl<float>(2.f, a); }, "stl32");
-    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast(2.f, a); }, "ekmett_fast");
-    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_lb(2.f, a); }, "ekmett_fast_lb");
-    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_ub(2.f, a); }, "ekmett_fast_ub");
-    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_precise(2.f, a); }, "ekmett_fast_precise");
-    log_midi_to_hz([](float a) { return fast::pow::ekmett_fast_better_precise(2.f, a); }, "ekmett_fast_better_precise");
-    log_midi_to_hz([](float a) { return fast::exp2::mineiro(a); }, "mineiro");
+    log_midi_to_hz([](float x) { return fast::exp2::stl(x); }, "exp2");
+    log_midi_to_hz([](float x) { return fast::exp2::mineiro(x); }, "mineiro");
+    log_midi_to_hz([](float x) { return fast::exp2::mineiro_faster(x); }, "mineiro_faster");
+    log_midi_to_hz([](float x) { return fast::exp2::schraudolph(x); }, "schraudolph");
+    log_midi_to_hz([](float x) { return (float)fast::exp2::desoras(x); }, "desoras");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_stl(x); }, "powx_stl");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_ekmett_fast(x); }, "powx_ekmett_fast");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_ekmett_fast_lb(x); }, "powx_ekmett_fast_lb");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_ekmett_fast_ub(x); }, "powx_ekmett_fast_ub");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_ekmett_fast_precise(x); }, "powx_ekmett_fast_precise");
+    log_midi_to_hz([](float x) { return fast::exp2::powx_ekmett_fast_better_precise(x); }, "powx_ekmett_fast_better_precise");
+    log_midi_to_hz([](float x) { return fast::exp2::exp_stl(x); }, "exp_stl");
+    log_midi_to_hz([](float x) { return fast::exp2::exp_ekmett_ub(x); }, "exp_ekmett_ub");
+    log_midi_to_hz([](float x) { return fast::exp2::exp_schraudolph(x); }, "exp_schraudolph");
+    log_midi_to_hz([](float x) { return fast::exp2::exp_mineiro(x); }, "exp_mineiro");
+    log_midi_to_hz([](float x) { return fast::exp2::exp_mineiro_faster(x); }, "exp_mineiro_faster");
 
-    log_denormalised_freq([](float x) { return fast::pow::stl<float>(2.f, x); }, "stl32");
-    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast(2.f, x); }, "ekmett_fast");
-    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_lb(2.f, x); }, "ekmett_fast_lb");
-    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_ub(2.f, x); }, "ekmett_fast_ub");
-    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_precise(2.f, x); }, "ekmett_fast_precise");
-    log_denormalised_freq([](float x) { return fast::pow::ekmett_fast_better_precise(2.f, x); }, "ekmett_fast_better_precise");
+    log_denormalised_freq([](float x) { return fast::exp2::stl(x); }, "exp2");
     log_denormalised_freq([](float x) { return fast::exp2::mineiro(x); }, "mineiro");
     log_denormalised_freq([](float x) { return fast::exp2::mineiro_faster(x); }, "mineiro_faster");
+    log_denormalised_freq([](float x) { return fast::exp2::schraudolph(x); }, "schraudolph");
+    log_denormalised_freq([](float x) { return (float)fast::exp2::desoras(x); }, "desoras");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_stl(x); }, "powx_stl");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_ekmett_fast(x); }, "powx_ekmett_fast");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_ekmett_fast_lb(x); }, "powx_ekmett_fast_lb");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_ekmett_fast_ub(x); }, "powx_ekmett_fast_ub");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_ekmett_fast_precise(x); }, "powx_ekmett_fast_precise");
+    log_denormalised_freq([](float x) { return fast::exp2::powx_ekmett_fast_better_precise(x); }, "powx_ekmett_fast_better_precise");
+    log_denormalised_freq([](float x) { return fast::exp2::exp_stl(x); }, "exp_stl");
+    log_denormalised_freq([](float x) { return fast::exp2::exp_ekmett_ub(x); }, "exp_ekmett_ub");
+    log_denormalised_freq([](float x) { return fast::exp2::exp_schraudolph(x); }, "exp_schraudolph");
+    log_denormalised_freq([](float x) { return fast::exp2::exp_mineiro(x); }, "exp_mineiro");
+    log_denormalised_freq([](float x) { return fast::exp2::exp_mineiro_faster(x); }, "exp_mineiro_faster");
     */
 
     /** EXP */
