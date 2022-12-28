@@ -8,9 +8,9 @@
 // #include "sin.hpp"
 // #include "cos.hpp"
 // #include "tanh.hpp"
-// #include "log.hpp"
+#include "log.hpp"
 #include "log2.hpp"
-// #include "log10.hpp"
+#include "log10.hpp"
 #include "pow.hpp"
 #include "exp.hpp"
 #include "exp2.hpp"
@@ -121,6 +121,53 @@ void log_db_to_gain(F exp_func, S name) noexcept {
         // pow (10, dB / 20)
         // exp10 (dB * 0.05)
         float gain = exp_func(dB * 0.05f);
+        std::cout << std::setprecision(12) << gain << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+template <typename F, typename S>
+void log_gain_to_db(F log_func, S name) noexcept {
+    constexpr float gains[] = {
+        6.309573444801929e-05f, // -84
+        8.912509381337459e-05f, // -81
+        0.00012589254117941674f, // -78
+        0.00017782794100389227f, // -75
+        0.00025118864315095795f, // -72
+        0.0003548133892335753f, // -69
+        0.0005011872336272725f, // -66
+        0.000707945784384138f, // -63
+        0.001f, // -60
+        0.001412537544622754f, // -57
+        0.001995262314968879f, // -54
+        0.002818382931264455f, // -51
+        0.003981071705534973f, // -48
+        0.005623413251903491f, // -45
+        0.007943282347242814f, // -42
+        0.011220184543019636f, // -39
+        0.015848931924611134f, // -36
+        0.0223872113856834f, // -33
+        0.03162277660168379f, // -30
+        0.0446683592150963f, // -27
+        0.06309573444801933f, // -24
+        0.08912509381337455f, // -21
+        0.12589254117941673f, // -18
+        0.1778279410038923f, // -15
+        0.251188643150958f, // -12
+        0.35481338923357547f, // -9
+        0.5011872336272722f, // -6
+        0.7079457843841379f, // -3
+        1.0f, // 0
+        1.4125375446227544f, // 3
+        1.9952623149688795f, // 6
+        2.8183829312644537f, // 9
+        3.9810717055349722f, // 12
+    };
+    std::cout << name << " = [";
+
+    for (const float g : gains) {
+        // log10(gain) * 20
+        float gain = log_func(g) * 20;
         std::cout << std::setprecision(12) << gain << ",";
     }
     std::cout << "]" << std::endl;
@@ -243,16 +290,27 @@ int main() {
     */
 
     /** LOG10 */
-    // benchmark(fast::log10::stl<float>, "stl");
-    // benchmark(fast::log10::jcook, "jcook");
-    // benchmark(fast::log10::newton, "newton");
-    // benchmark(fast::log10::log1_stl, "log1_stl");
-    // benchmark(fast::log10::log1_njuffa, "log1_njuffa");
-    // benchmark(fast::log10::log1_njuffa_faster, "log1_njuffa_faster");
-    // benchmark(fast::log10::log1_ankerl32, "log1_ankerl32");
-    // benchmark(fast::log10::log1_ekmett_lb, "log1_ekmett_lb");
-    // benchmark(fast::log10::log1_mineiro, "log1_mineiro");
-    // benchmark(fast::log10::log1_mineiro_faster, "log1_mineiro_faster");
+    benchmark(fast::log10::stl, "stl");
+    benchmark(fast::log10::jcook, "jcook");
+    benchmark(fast::log10::newton, "newton");
+    benchmark(fast::log10::log1_njuffa, "log1_njuffa");
+    benchmark(fast::log10::log1_njuffa_faster, "log1_njuffa_faster");
+    benchmark(fast::log10::log1_ankerl32, "log1_ankerl32");
+    benchmark(fast::log10::log1_ekmett_ub, "log1_ekmett_ub");
+    benchmark(fast::log10::log1_ekmett_lb, "log1_ekmett_lb");
+    benchmark(fast::log10::log2_mineiro, "log2_mineiro");
+    benchmark(fast::log10::log2_mineiro_faster, "log2_mineiro_faster");
+
+    log_gain_to_db(fast::log10::stl, "stl");
+    log_gain_to_db(fast::log10::jcook, "jcook");
+    log_gain_to_db(fast::log10::newton, "newton");
+    log_gain_to_db(fast::log10::log1_njuffa, "log1_njuffa");
+    log_gain_to_db(fast::log10::log1_njuffa_faster, "log1_njuffa_faster");
+    log_gain_to_db(fast::log10::log1_ankerl32, "log1_ankerl32");
+    log_gain_to_db(fast::log10::log1_ekmett_ub, "log1_ekmett_ub");
+    log_gain_to_db(fast::log10::log1_ekmett_lb, "log1_ekmett_lb");
+    log_gain_to_db(fast::log10::log2_mineiro, "log2_mineiro");
+    log_gain_to_db(fast::log10::log2_mineiro_faster, "log2_mineiro_faster");
 
     /** EXP2 */
     /**

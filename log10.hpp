@@ -34,17 +34,52 @@ static inline float newton(float x) noexcept {
     return __newton_log2(x) / log2_10;
 }
 
+// https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastlog.h
+// adapted from pmineiro's log2
+
 // 1 / log10(e)
 static constexpr float log10e = 0.434294481903251827651f;
 
-static inline float log1_stl(float x) noexcept { return log::stl(x) * log10e; }
 static inline float log1_njuffa(float x) noexcept { return log::njuffa(x) * log10e; }
 static inline float log1_njuffa_faster(float x) noexcept { return log::njuffa_faster(x) * log10e; }
-static inline float log1_ankerl32(float x) noexcept { return log::ankerl32(x) * log10e; }
+// static inline float log1_ankerl32(float x) noexcept { return log::ankerl32(x) * log10e; }
+static inline float log1_ankerl32(float a) noexcept {
+    union { float f; int x; } u = { a };
+    // return (u.x - 1064866805) * 8.262958405176314e-8f * log10e; /* 1 / 12102203.0; */
+    return (u.x - 1064866805) * 3.5885572395641675e-8f; /* 1 / 12102203.0; */
+}
+static inline float log1_ekmett_ub(float x) noexcept { return log::ekmett_ub(x) * log10e; }
 static inline float log1_ekmett_lb(float x) noexcept { return log::ekmett_lb(x) * log10e; }
 static inline float log1_jenkas(float x) noexcept { return log::jenkas(x) * log10e; }
-static inline float log1_mineiro(float x) noexcept { return log::mineiro(x) * log10e; }
-static inline float log1_mineiro_faster(float x) noexcept { return log::mineiro_faster(x) * log10e; }
+
+// adapted from log2::mineiro
+constexpr float log2_mineiro (float x) noexcept {
+    union { float f; uint32_t i; } vx = { x };
+    union { uint32_t i; float f; } mx = { (vx.i & 0x007FFFFF) | 0x3f000000 };
+    float y = vx.i;
+    // log21_10 = 0.3010299956639812
+    // y *= log21_10 * 1.1920928955078125e-7f;
+    y *= 3.588557191657796e-8f;
+
+    // return log21_10 * (y - 124.22551499f
+    //                      - 1.498030302f * mx.f
+    //                      - 1.72587999f  / (0.3520887068f + mx.f));
+    return y - 37.39560623879553f
+             - 0.4509520553155725f * mx.f
+             - 0.5195416459062518f / (0.3520887068f + mx.f);
+}
+
+// adapted from log2::mineiro_faster
+static inline float log2_mineiro_faster(float x) noexcept {
+    union { float f; uint32_t i; } vx = { x };
+    float y = vx.i;
+    // log21_10 = 0.3010299956639812
+    // y *= log21_10 * 1.1920928955078125e-7f;
+    y *= 3.588557191657796e-8f;
+    // return y - log21_10 * 126.94269504f;
+    // return y - 38.21355893746529f;
+    return y - 38.21355894f;
+}
 
 
 } // namespace log10

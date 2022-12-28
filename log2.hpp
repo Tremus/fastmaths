@@ -55,14 +55,14 @@ static inline float newton(float x) noexcept {
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastlog.h
 static inline float mineiro(float x) {
-  union { float f; uint32_t i; } vx = { x };
-  union { uint32_t i; float f; } mx = { (vx.i & 0x007FFFFF) | 0x3f000000 };
-  float y = vx.i;
-  y *= 1.1920928955078125e-7f;
+    union { float f; uint32_t i; } vx = { x };
+    union { uint32_t i; float f; } mx = { (vx.i & 0x007FFFFF) | 0x3f000000 };
+    float y = vx.i;
+    y *= 1.1920928955078125e-7f;
 
-  return y - 124.22551499f
-           - 1.498030302f * mx.f
-           - 1.72587999f / (0.3520887068f + mx.f);
+    return y - 124.22551499f
+             - 1.498030302f * mx.f
+             - 1.72587999f  / (0.3520887068f + mx.f);
 }
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fastlog.h
@@ -94,7 +94,6 @@ static inline float log1_njuffa_faster(float x) noexcept { return log::njuffa_fa
 static inline float log1_ankerl32(float x) noexcept { return log::ankerl32(x) * log2e; }
 static inline float log1_ekmett_lb(float x) noexcept { return log::ekmett_lb(x) * log2e; }
 static inline float log1_jenkas(float x) noexcept { return log::jenkas(x) * log2e; }
-static inline float log1_mineiro(float x) noexcept { return log::mineiro(x) * log2e; }
 static inline float log1_mineiro_faster(float x) noexcept { return log::mineiro_faster(x) * log2e; }
 
 

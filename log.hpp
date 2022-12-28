@@ -104,6 +104,13 @@ static inline float ankerl32(float a) noexcept {
 }
 
 // https://github.com/ekmett/approximate/blob/master/cbits/fast.c
+/* 1065353216 - 722019 */
+static inline float ekmett_ub(float a) {
+  union { float f; int x; } u = { a };
+  return (u.x - 1064631197) * 8.262958405176314e-8f; /* 1 / 12102203.0; */
+}
+
+// https://github.com/ekmett/approximate/blob/master/cbits/fast.c
 /* 1065353216 + 1 */
 static inline float ekmett_lb(float a) noexcept {
     union { float f; int x; } u = { a };
@@ -144,7 +151,9 @@ constexpr float mineiro (float x) noexcept {
     float y = vx.i;
     y *= 1.1920928955078125e-7f;
 
-    float log2_x = y - 124.22551499f - 1.498030302f * mx.f - 1.72587999f / (0.3520887068f + mx.f);
+    float log2_x = y - 124.22551499f
+                     - 1.498030302f * mx.f
+                     - 1.72587999f / (0.3520887068f + mx.f);
 
     return 0.69314718f * log2_x;
 }
