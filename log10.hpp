@@ -5,8 +5,7 @@
 namespace fast {
 namespace log10 {
 
-template<typename T>
-constexpr T stl(T x) noexcept { return std::log10(x); }
+static inline float stl(float x) noexcept { return std::log10f(x); }
 
 // https://www.johndcook.com/blog/2021/03/24/log10-trick/
 constexpr float jcook(float x) noexcept { return (x - 1) / (x + 1); }

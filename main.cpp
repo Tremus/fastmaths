@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 
+#include "common.hpp"
 // #include "sin.hpp"
 // #include "cos.hpp"
 // #include "tanh.hpp"
@@ -11,8 +12,9 @@
 #include "log2.hpp"
 // #include "log10.hpp"
 #include "pow.hpp"
-#include "exp2.hpp"
 #include "exp.hpp"
+#include "exp2.hpp"
+#include "exp10.hpp"
 
 
 template <typename F, typename S>
@@ -79,7 +81,7 @@ void log_normalised_freq(F log_func, S name) noexcept {
 }
 
 template <typename F, typename S>
-void log_denormalised_freq(F pow_func, S name) noexcept {
+void log_denormalised_freq(F exp_func, S name) noexcept {
     constexpr float values[] = {
         0.0f, 0.025f, 0.05f, 0.075f,
         0.1f, 0.125f, 0.15f, 0.175f,
@@ -95,8 +97,31 @@ void log_denormalised_freq(F pow_func, S name) noexcept {
     std::cout << name << " = [";
 
     for (const float v : values) {
-        float denormalised = 20 * pow_func(v * 10);
+        float denormalised = 20 * exp_func(v * 10);
         std::cout << std::setprecision(12) << denormalised << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+template <typename F, typename S>
+void log_db_to_gain(F exp_func, S name) noexcept {
+    constexpr float decibels[] = {
+       -84.0f, -81.0f, -78.0f, -75.0f,
+       -72.0f, -69.0f, -66.0f, -63.0f,
+       -60.0f, -57.0f, -54.0f, -51.0f,
+       -48.0f, -45.0f, -42.0f, -39.0f,
+       -36.0f, -33.0f, -30.0f, -27.0f,
+       -24.0f, -21.0f, -18.0f, -15.0f,
+       -12.0f, -9.0f, -6.0f, -3.0f,
+        0.0f, 3.0f, 6.0f, 9.0f,
+        12.0f};
+    std::cout << name << " = [";
+
+    for (const float dB : decibels) {
+        // pow (10, dB / 20)
+        // exp10 (dB * 0.05)
+        float gain = exp_func(dB * 0.05f);
+        std::cout << std::setprecision(12) << gain << ",";
     }
     std::cout << "]" << std::endl;
 }
@@ -290,4 +315,33 @@ int main() {
     // benchmark(fast::exp::schraudolph, "schraudolph");
     // benchmark(fast::exp::mineiro, "mineiro");
     // benchmark(fast::exp::mineiro_faster, "mineiro_faster");
+
+    /** EXP10 */
+    /**
+    benchmark([](float x) { return fast::exp10::powx_stl(x); }, "powx_stl");
+    benchmark([](float x) { return fast::exp10::powx_ekmett_fast(x); }, "powx_ekmett_fast");
+    benchmark([](float x) { return fast::exp10::powx_ekmett_fast_lb(x); }, "powx_ekmett_fast_lb");
+    benchmark([](float x) { return fast::exp10::powx_ekmett_fast_ub(x); }, "powx_ekmett_fast_ub");
+    benchmark([](float x) { return fast::exp10::powx_ekmett_fast_precise(x); }, "powx_ekmett_fast_precise");
+    benchmark([](float x) { return fast::exp10::powx_ekmett_fast_better_precise(x); }, "powx_ekmett_fast_better_precise");
+    benchmark([](float x) { return fast::exp10::exp_stl(x); }, "exp_stl");
+    benchmark([](float x) { return fast::exp10::exp_ekmett_lb(x); }, "exp_ekmett_lb");
+    benchmark([](float x) { return fast::exp10::exp_ekmett_ub(x); }, "exp_ekmett_ub");
+    benchmark([](float x) { return fast::exp10::exp_schraudolph(x); }, "exp_schraudolph");
+    benchmark([](float x) { return fast::exp10::exp_mineiro(x); }, "exp_mineiro");
+    benchmark([](float x) { return fast::exp10::exp_mineiro_faster(x); }, "exp_mineiro_faster");
+
+    log_db_to_gain([](float x) { return fast::exp10::powx_stl(x); }, "powx_stl");
+    log_db_to_gain([](float x) { return fast::exp10::powx_ekmett_fast(x); }, "powx_ekmett_fast");
+    log_db_to_gain([](float x) { return fast::exp10::powx_ekmett_fast_lb(x); }, "powx_ekmett_fast_lb");
+    log_db_to_gain([](float x) { return fast::exp10::powx_ekmett_fast_ub(x); }, "powx_ekmett_fast_ub");
+    log_db_to_gain([](float x) { return fast::exp10::powx_ekmett_fast_precise(x); }, "powx_ekmett_fast_precise");
+    log_db_to_gain([](float x) { return fast::exp10::powx_ekmett_fast_better_precise(x); }, "powx_ekmett_fast_better_precise");
+    log_db_to_gain([](float x) { return fast::exp10::exp_stl(x); }, "exp_stl");
+    log_db_to_gain([](float x) { return fast::exp10::exp_ekmett_lb(x); }, "exp_ekmett_lb");
+    log_db_to_gain([](float x) { return fast::exp10::exp_ekmett_ub(x); }, "exp_ekmett_ub");
+    log_db_to_gain([](float x) { return fast::exp10::exp_schraudolph(x); }, "exp_schraudolph");
+    log_db_to_gain([](float x) { return fast::exp10::exp_mineiro(x); }, "exp_mineiro");
+    log_db_to_gain([](float x) { return fast::exp10::exp_mineiro_faster(x); }, "exp_mineiro_faster");
+    */
 }

@@ -70,6 +70,7 @@ static constexpr float ln2 = 0.693147180559945309417f;
 
 static inline float exp_stl(float x) noexcept { return exp::stl(x * ln2); }
 static inline float exp_ekmett_ub(float x) noexcept { return exp::ekmett_ub(x * ln2); }
+static inline float exp_ekmett_lb(float x) noexcept { return exp::ekmett_lb(x * ln2); }
 static inline float exp_schraudolph(float x) noexcept { return exp::schraudolph(x * ln2); }
 static inline float exp_mineiro(float x) noexcept { return exp::mineiro(x * ln2); }
 static inline float exp_mineiro_faster(float x) noexcept { return exp::mineiro_faster(x * ln2); }

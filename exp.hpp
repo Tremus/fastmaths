@@ -17,6 +17,14 @@ static inline float ekmett_ub(float a) noexcept {
 }
 
 // https://github.com/ekmett/approximate/blob/master/cbits/fast.c
+/* 1065353216 - 722019 */
+static inline float ekmett_lb(float a) {
+  union { float f; int x; } u;
+  u.x = (int) (12102203 * a + 1064631197);
+  return u.f;
+}
+
+// https://github.com/ekmett/approximate/blob/master/cbits/fast.c
 /* 1065353216 - 486411 = 1064866805 */
 static inline float schraudolph(float a) noexcept {
   union { float f; int x; } u;

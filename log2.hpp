@@ -6,8 +6,7 @@
 namespace fast {
 namespace log2 {
 
-template<typename T>
-constexpr T stl(T x) noexcept { return std::log2(x); }
+static inline float stl(float x) noexcept { return std::log2f(x); }
 
 // https://stackoverflow.com/questions/9411823/fast-log2float-x-implementation-c/28730362#28730362
 static inline float lgeoffroy(float val) {

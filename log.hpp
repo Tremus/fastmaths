@@ -5,8 +5,7 @@
 namespace fast {
 namespace log {
 
-template<typename T>
-constexpr T stl(T x) noexcept { return std::log(x); }
+static inline  float stl(float x) noexcept { return std::logf(x); }
 
 // JUCE
 /** Provides a fast approximation of the function log(x+1) using a Pade approximant
