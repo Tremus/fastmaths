@@ -19,16 +19,17 @@ constexpr T pade (T x) noexcept {
 }
 
 // https://stackoverflow.com/a/28050328
-template<typename T>
-constexpr T milianw(T x) noexcept
-{
-    constexpr T tp = 1./(2.*M_PI);
-    x *= tp;
-    x -= T(.25) + std::floor(x + T(.25));
-    x *= T(16.) * (std::abs(x) - T(.5));
-    #if EXTRA_PRECISION
-    x += T(.225) * x * (std::abs(x) - T(1.));
-    #endif
+static inline float milianw(float x) noexcept {
+    x *= 0.15915494309189535f; // 1 / 2π
+    x -= 0.25f + std::floor(x + 0.25f);
+    x *= 16 * (std::abs(x) - 0.5f);
+    return x;
+}
+static inline float milianw_precise(float x) noexcept {
+    x *= 0.15915494309189535f; // 1 / 2π
+    x -= 0.25f + std::floor(x + 0.25f);
+    x *= 16 * (std::abs(x) - 0.5f);
+    x += 0.225f * x * (std::abs(x) - 1);
     return x;
 }
 

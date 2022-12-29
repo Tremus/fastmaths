@@ -6,7 +6,7 @@
 
 #include "common.hpp"
 #include "sin.hpp"
-// #include "cos.hpp"
+#include "cos.hpp"
 // #include "tanh.hpp"
 #include "log.hpp"
 #include "log2.hpp"
@@ -196,8 +196,6 @@ void log_sin(F sin_func, S name) noexcept {
     std::cout << "]" << std::endl;
 }
 
-
-
 float gen_random() noexcept {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -223,6 +221,7 @@ int main() {
     benchmark([](float x) { return x * x; }, "x^2");
 
     /** SINE */
+    /**
     benchmark(fast::sin::stl, "stl");
     // benchmark(fast::sin::taylor<float, 5>, "taylor 5");
     // benchmark(fast::sin::taylor<float, 9>, "taylor 9");
@@ -256,14 +255,26 @@ int main() {
     log_sin(fast::sin::mineiro_full, "mineiro_full");
     log_sin(fast::sin::mineiro_full_faster, "mineiro_full_faster");
     log_sin(fast::sin::njuffa<float>, "njuffa");
+    */
 
     /** COS */
-    // benchmark(fast::cos::stl<float>, "stl");
-    // benchmark(fast::cos::pade<float>, "pade");
-    // benchmark(fast::cos::milianw<float>, "milianw");
-    // benchmark(fast::cos::juha, "juha");
-    // benchmark(fast::cos::mineiro, "mineiro");
-    // benchmark(fast::cos::mineiro_faster, "mineiro_faster");
+    /**
+    benchmark(fast::cos::stl<float>, "stl");
+    benchmark(fast::cos::pade<float>, "pade");
+    benchmark(fast::cos::milianw, "milianw");
+    benchmark(fast::cos::milianw_precise, "milianw_precise");
+    benchmark(fast::cos::juha, "juha");
+    benchmark(fast::cos::mineiro, "mineiro");
+    benchmark(fast::cos::mineiro_faster, "mineiro_faster");
+
+    log_sin(fast::cos::stl<float>, "stl");
+    log_sin(fast::cos::pade<float>, "pade");
+    log_sin(fast::cos::milianw, "milianw");
+    log_sin(fast::cos::milianw_precise, "milianw_precise");
+    log_sin(fast::cos::juha, "juha");
+    log_sin(fast::cos::mineiro, "mineiro");
+    log_sin(fast::cos::mineiro_faster, "mineiro_faster");
+    */
 
     /** TANH */
     // benchmark(fast::tanh::stl<float>, "stl");
