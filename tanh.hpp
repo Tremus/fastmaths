@@ -42,9 +42,15 @@ static float c3(float v) noexcept {
 //     return 1 - (2 * (1 / (1 + std::exp(x * 2))));
 // }
 
+static inline float exp_ekmett_ub (float p) noexcept { return -1 + 2 / (1 + exp::ekmett_ub(-2 * p)); }
+static inline float exp_ekmett_lb (float p) noexcept { return -1 + 2 / (1 + exp::ekmett_lb(-2 * p)); }
+static inline float exp_schraudolph (float p) noexcept { return -1 + 2 / (1 + exp::schraudolph(-2 * p)); }
+
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fasthyperbolic.h
-static inline float mineiro   (float p) noexcept { return -1 + 2 / (1 + exp::mineiro  (-2 * p)); }
-static inline float mineiro_faster (float p) noexcept { return -1 + 2 / (1 + exp::mineiro_faster(-2 * p)); }
+static inline float exp_mineiro   (float p) noexcept { return -1 + 2 / (1 + exp::mineiro  (-2 * p)); }
+static inline float exp_mineiro_faster (float p) noexcept { return -1 + 2 / (1 + exp::mineiro_faster(-2 * p)); }
+
+
 
 } // namespace tanh
 } // namespace fast
