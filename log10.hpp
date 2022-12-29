@@ -20,7 +20,7 @@ constexpr float __newton_log2(float x) noexcept {
     // const float epsilon = 0.00001f; // change this to change accuracy
     float r = x / 2; // better first guesses converge faster
     float r2 = __newton_next(r, x);
-    float delta = r - r2;
+    // float delta = r - r2;
     // while (delta * delta > epsilon) {
     //     r = r2;
     //     r2 = __newton_next(r, x);

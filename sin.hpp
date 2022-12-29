@@ -1,11 +1,11 @@
 #pragma once
 #include <cmath>
+#include "./common.hpp"
 
 namespace fast {
 namespace sin {
 
-template<typename T>
-constexpr T stl(T x) noexcept { return std::sin(x); }
+static inline float stl(float x) noexcept { return std::sinf(x); }
 
 // based on https://stackoverflow.com/questions/18662261/fastest-implementation-of-sine-cosine-and-square-root-in-c-doesnt-need-to-b
 template<typename T, int N = 15>
@@ -59,30 +59,6 @@ constexpr float __hermiteInterpolate(float v0, float v1, float v2, float v3, flo
     return result;
 }
 
-// Works at any range
-// Only slightly faster than stl
-static inline float tremus_lookup(float radians) {
-    // Low res sine wave. 32 bytes
-    static const float data[8] = {
-        0.0f,  0.7071067811865476f,  1.0f,  0.7071067811865476f,
-        0.0f, -0.7071067811865476f, -1.0f, -0.7071067811865476f,
-    };
-
-    // float idx = phase_0_to_1 * 8;
-    float idx = radians * 1.2732395447351628f;
-    int idx1 = (int)idx;
-    float offset = idx - idx1;
-
-    // use bit masks to always get a value within range of buffer
-    return __hermiteInterpolate(
-        data[idx1 - 1 & 7],
-        data[idx1 + 0 & 7],
-        data[idx1 + 1 & 7],
-        data[idx1 + 2 & 7],
-        offset
-    );
-}
-
 // fairly accurate in values between -pi & pi, but not beyond that
 // ~ 32% faster than std::sin
 // JUCE uses this
@@ -132,7 +108,8 @@ constexpr T slaru(T x) noexcept {
     const T B = 4/static_cast<T>(M_PI);
     const T C = -4/(static_cast<T>(M_PI)*static_cast<T>(M_PI));
 
-    T y = B * x + C * x * abs(x);
+    T y = B * x
+        + C * x * abs(x);
 
     // const float Q = 0.775;
     const T P = static_cast<T>(0.225);
@@ -146,7 +123,17 @@ constexpr T slaru(T x) noexcept {
 // https://stackoverflow.com/a/71674578
 template<typename T>
 constexpr T juha(float x) noexcept {
-    return static_cast<T>(4) * static_cast<T>(0.31830988618) * x * (static_cast<T>(1) - std::abs(static_cast<T>(0.31830988618) * x));
+    return 4 * static_cast<T>(0.31830988618) * x * (1 - static_cast<T>(0.31830988618) * std::abs(x));
+}
+
+// I edited juha to cycle well over +/- pi
+static inline float juha_fmod(float x) noexcept {
+    int times = (int)(x / static_cast<float>(M_PI));
+
+    // correct sign
+    union { float f; int i; } y = { juha<float>(std::fmodf(x, static_cast<float>(M_PI))) };
+    y.i ^= times << 31;
+    return y.f;
 }
 
 // https://github.com/romeric/fastapprox/blob/master/fastapprox/src/fasttrig.h
@@ -182,14 +169,15 @@ static inline float mineiro_faster (float x) noexcept {
     uint32_t sign = vx.i & 0x80000000;
     vx.i &= 0x7FFFFFFF;
 
-    float qpprox = fouroverpi * x - fouroverpisq * x * vx.f;
+    float qpprox = fouroverpi * x
+                 - fouroverpisq * x * vx.f;
 
     p.i |= sign;
 
     return qpprox * (q + p.f * qpprox);
 }
 
-static inline float mineiro_fast_full (float x) noexcept {
+static inline float mineiro_full (float x) noexcept {
     static const float twopi = 6.2831853071795865f;
     static const float invtwopi = 0.15915494309189534f;
 
@@ -198,7 +186,7 @@ static inline float mineiro_fast_full (float x) noexcept {
     return mineiro ((half + k) * twopi - x);
 }
 
-static inline float mineiro_faster_full (float x) noexcept {
+static inline float mineiro_full_faster (float x) noexcept {
     static const float twopi = 6.2831853071795865f;
     static const float invtwopi = 0.15915494309189534f;
 
@@ -211,8 +199,8 @@ static inline float mineiro_faster_full (float x) noexcept {
 // https://stackoverflow.com/a/11575574
 template <typename T>
 constexpr T __rint (T x) noexcept {
-  T t = floor (fabs(x) + 0.5);
-  return (x < 0.0) ? -t : t;
+  T t = floor(std::fabs(x) + static_cast<T>(0.5));
+  return (x < 0) ? -t : t;
 }
 template <typename T>
 constexpr T __cos_core (T x) noexcept {
@@ -221,19 +209,19 @@ constexpr T __cos_core (T x) noexcept {
     x4 = x2 * x2;
     x8 = x4 * x4;
     /* evaluate polynomial using Estrin's scheme */
-    return (-2.7236370439787708e-7 * x2 + 2.4799852696610628e-5) * x8 +
-           (-1.3888885054799695e-3 * x2 + 4.1666666636943683e-2) * x4 +
-           (-4.9999999999963024e-1 * x2 + 1.0000000000000000e+0);
+    return (static_cast<T>(-2.7236370439787708e-7) * x2 + static_cast<T>(2.4799852696610628e-5)) * x8 +
+           (static_cast<T>(-1.3888885054799695e-3) * x2 + static_cast<T>(4.1666666636943683e-2)) * x4 +
+           (static_cast<T>(-4.9999999999963024e-1) * x2 + static_cast<T>(1.0000000000000000e+0));
 }
 /* minimax approximation to sin on [-pi/4, pi/4] with rel. err. ~= 5.5e-12 */
 template <typename T>
-constexpr T __sin_core (double x) noexcept {
+constexpr T __sin_core (T x) noexcept {
     T x4, x2;
     x2 = x * x;
     x4 = x2 * x2;
     /* evaluate polynomial using a mix of Estrin's and Horner's scheme */
-    return ((2.7181216275479732e-6 * x2 - 1.9839312269456257e-4) * x4 +
-            (8.3333293048425631e-3 * x2 - 1.6666666640797048e-1)) * x2 * x + x;
+    return ((static_cast<T>(2.7181216275479732e-6) * x2 - static_cast<T>(1.9839312269456257e-4)) * x4 +
+            (static_cast<T>(8.3333293048425631e-3) * x2 - static_cast<T>(1.6666666640797048e-1))) * x2 * x + x;
 }
 
 /* relative error < 7e-12 on [-50000, 50000] */
@@ -242,10 +230,10 @@ constexpr T njuffa (T x) noexcept {
     T q, t;
     int quadrant;
     /* Cody-Waite style argument reduction */
-    q = __rint<T> (x * 6.3661977236758138e-1);
+    q = __rint<T> (x * static_cast<T>(6.3661977236758138e-1));
     quadrant = (int)q;
-    t = x - q * 1.5707963267923333e+00;
-    t = t - q * 2.5633441515945189e-12;
+    t = x - q * static_cast<T>(1.5707963267923333e+00);
+    t = t - q * static_cast<T>(2.5633441515945189e-12);
     if (quadrant & 1) {
         t = __cos_core<T>(t);
     } else {

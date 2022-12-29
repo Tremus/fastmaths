@@ -32,7 +32,7 @@ static inline float schraudolph(float a) noexcept {
 }
 
 // https://www.musicdsp.org/en/latest/Other/50-base-2-exp.html
-static double desoras (const double val) noexcept {
+static inline double desoras (const double val) noexcept {
     int    e;
     double ret;
 
@@ -49,7 +49,7 @@ static double desoras (const double val) noexcept {
     return (ret);
 }
 
-static double desoras_pos (const double val) noexcept {
+static inline double desoras_pos (const double val) noexcept {
     int    e;
     double ret;
 

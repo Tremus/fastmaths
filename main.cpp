@@ -5,7 +5,7 @@
 #include <random>
 
 #include "common.hpp"
-// #include "sin.hpp"
+#include "sin.hpp"
 // #include "cos.hpp"
 // #include "tanh.hpp"
 #include "log.hpp"
@@ -173,6 +173,31 @@ void log_gain_to_db(F log_func, S name) noexcept {
     std::cout << "]" << std::endl;
 }
 
+template <typename F, typename S>
+void log_sin(F sin_func, S name) noexcept {
+    constexpr float radians[] = {
+        -12.566370614359172f, -12.173671532660448f, -11.780972450961723f, -11.388273369263f, -10.995574287564276f, -10.602875205865551f, -10.210176124166829f, -9.817477042468104f,
+        -9.42477796076938f, -9.032078879070655f, -8.63937979737193f, -8.246680715673207f, -7.853981633974483f, -7.461282552275758f, -7.0685834705770345f, -6.675884388878311f,
+        -6.283185307179586f, -5.890486225480862f, -5.497787143782138f, -5.105088062083414f, -4.71238898038469f, -4.319689898685965f, -3.9269908169872414f, -3.5342917352885173f,
+        -3.141592653589793f, -2.748893571891069f, -2.356194490192345f, -1.9634954084936207f, -1.5707963267948966f, -1.1780972450961724f, -0.7853981633974483f, -0.39269908169872414f,
+        0.0f, 0.39269908169872414f, 0.7853981633974483f, 1.1780972450961724f, 1.5707963267948966f, 1.9634954084936207f, 2.356194490192345f, 2.748893571891069f,
+        3.141592653589793f, 3.5342917352885173f, 3.9269908169872414f, 4.319689898685965f, 4.71238898038469f, 5.105088062083414f, 5.497787143782138f, 5.890486225480862f,
+        6.283185307179586f, 6.675884388878311f, 7.0685834705770345f, 7.461282552275758f, 7.853981633974483f, 8.246680715673207f, 8.63937979737193f, 9.032078879070655f,
+        9.42477796076938f, 9.817477042468104f, 10.210176124166829f, 10.602875205865551f, 10.995574287564276f, 11.388273369263f, 11.780972450961723f, 12.173671532660448f,
+        12.566370614359172f
+    };
+
+    std::cout << name << " = [";
+
+    for (const float r : radians) {
+        float s = sin_func(r);
+        std::cout << std::setprecision(12) << s << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+
+
 float gen_random() noexcept {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -198,7 +223,7 @@ int main() {
     benchmark([](float x) { return x * x; }, "x^2");
 
     /** SINE */
-    // benchmark(fast::sin::stl<float>, "stl");
+    benchmark(fast::sin::stl, "stl");
     // benchmark(fast::sin::taylor<float, 5>, "taylor 5");
     // benchmark(fast::sin::taylor<float, 9>, "taylor 9");
     // benchmark(fast::sin::taylor<float, 13>, "taylor 13");
@@ -207,17 +232,30 @@ int main() {
     // benchmark(fast::sin::taylorN<float, 2>, "taylorN 2");
     // benchmark(fast::sin::taylorN<float, 3>, "taylorN 3");
     // benchmark(fast::sin::taylorN<float, 4>, "taylorN 3");
-    // benchmark(fast::sin::tremus_lookup, "tremus_lookup");
-    // benchmark(fast::sin::bhaskara_radians<float>, "bhaskara_radians");
-    // benchmark(fast::sin::pade<float>, "pade");
-    // benchmark(fast::sin::sin_approx<float>, "sin_approx");
-    // benchmark(fast::sin::slaru<float>, "slaru");
-    // benchmark(fast::sin::juha<float>, "juha");
-    // benchmark(fast::sin::mineiro, "mineiro");
-    // benchmark(fast::sin::mineiro_faster, "mineiro_faster");
-    // benchmark(fast::sin::mineiro_fast_full, "mineiro_fast_full");
-    // benchmark(fast::sin::mineiro_faster_full, "mineiro_faster_full");
-    // benchmark(fast::sin::njuffa<long double>, "njuffa");
+    benchmark(fast::sin::bhaskara_radians<float>, "bhaskara_radians");
+    benchmark(fast::sin::pade<float>, "pade");
+    benchmark(fast::sin::sin_approx<float>, "sin_approx");
+    benchmark(fast::sin::slaru<float>, "slaru");
+    benchmark(fast::sin::juha<float>, "juha");
+    benchmark(fast::sin::juha_fmod, "juha_fmod");
+    benchmark(fast::sin::mineiro, "mineiro");
+    benchmark(fast::sin::mineiro_faster, "mineiro_faster");
+    benchmark(fast::sin::mineiro_full, "mineiro_full");
+    benchmark(fast::sin::mineiro_full_faster, "mineiro_full_faster");
+    benchmark(fast::sin::njuffa<float>, "njuffa");
+
+    log_sin(fast::sin::stl, "stl");
+    log_sin(fast::sin::bhaskara_radians<float>, "bhaskara_radians");
+    log_sin(fast::sin::pade<float>, "pade");
+    log_sin(fast::sin::sin_approx<float>, "sin_approx");
+    log_sin(fast::sin::slaru<float>, "slaru");
+    log_sin(fast::sin::juha<float>, "juha");
+    log_sin(fast::sin::juha_fmod, "juha_fmod");
+    log_sin(fast::sin::mineiro, "mineiro");
+    log_sin(fast::sin::mineiro_faster, "mineiro_faster");
+    log_sin(fast::sin::mineiro_full, "mineiro_full");
+    log_sin(fast::sin::mineiro_full_faster, "mineiro_full_faster");
+    log_sin(fast::sin::njuffa<float>, "njuffa");
 
     /** COS */
     // benchmark(fast::cos::stl<float>, "stl");
@@ -290,6 +328,7 @@ int main() {
     */
 
     /** LOG10 */
+    /*
     benchmark(fast::log10::stl, "stl");
     benchmark(fast::log10::jcook, "jcook");
     benchmark(fast::log10::newton, "newton");
@@ -311,6 +350,7 @@ int main() {
     log_gain_to_db(fast::log10::log1_ekmett_lb, "log1_ekmett_lb");
     log_gain_to_db(fast::log10::log2_mineiro, "log2_mineiro");
     log_gain_to_db(fast::log10::log2_mineiro_faster, "log2_mineiro_faster");
+    */
 
     /** EXP2 */
     /**
