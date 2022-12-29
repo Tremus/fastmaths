@@ -15,6 +15,7 @@
 #include "exp.hpp"
 #include "exp2.hpp"
 #include "exp10.hpp"
+#include "sqrt.hpp"
 
 
 template <typename F, typename S>
@@ -196,7 +197,6 @@ void log_sin(F sin_func, S name) noexcept {
     std::cout << "]" << std::endl;
 }
 
-
 template <typename F, typename S>
 void log_tanh(F tanh_func, S name) noexcept {
     constexpr float values[] = {
@@ -215,6 +215,25 @@ void log_tanh(F tanh_func, S name) noexcept {
 
     for (const float v : values) {
         float s = tanh_func(v);
+        std::cout << std::setprecision(12) << s << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+template <typename F, typename S>
+void log_sqrt(F sqrt_func, S name) noexcept {
+    constexpr float values[] = {
+         0.0f,  0.1f,  0.2f,  0.3f,  0.4f,  0.5f,  0.6f,  0.7f,  0.8f,  0.9f,
+         1.0f,  1.1f,  1.2f,  1.3f,  1.4f,  1.5f,  1.6f,  1.7f,  1.8f,  1.9f,
+         2.0f,  2.1f,  2.2f,  2.3f,  2.4f,  2.5f,  2.6f,  2.7f,  2.8f,  2.9f,
+         3.0f,  3.1f,  3.2f,  3.3f,  3.4f,  3.5f,  3.6f,  3.7f,  3.8f,  3.9f,
+         4.0f,
+    };
+
+    std::cout << name << " = [";
+
+    for (const float v : values) {
+        float s = sqrt_func(v);
         std::cout << std::setprecision(12) << s << ",";
     }
     std::cout << "]" << std::endl;
@@ -301,6 +320,7 @@ int main() {
     */
 
     /** TANH */
+    /**
     benchmark(fast::tanh::stl<float>, "stl");
     benchmark(fast::tanh::pade<float>, "pade");
     benchmark(fast::tanh::c3, "c3");
@@ -318,6 +338,7 @@ int main() {
     log_tanh(fast::tanh::exp_schraudolph, "exp_schraudolph");
     log_tanh(fast::tanh::exp_mineiro, "exp_mineiro");
     log_tanh(fast::tanh::exp_mineiro_faster, "exp_mineiro_faster");
+    */
 
     /** LOG */
     /**
@@ -486,5 +507,16 @@ int main() {
     log_db_to_gain([](float x) { return fast::exp10::exp_schraudolph(x); }, "exp_schraudolph");
     log_db_to_gain([](float x) { return fast::exp10::exp_mineiro(x); }, "exp_mineiro");
     log_db_to_gain([](float x) { return fast::exp10::exp_mineiro_faster(x); }, "exp_mineiro_faster");
+    */
+
+    /** SQRT */
+    /**
+    benchmark(fast::sqrt::stl, "stl");
+    benchmark(fast::sqrt::bigtailwolf, "bigtailwolf");
+    benchmark(fast::sqrt::nimig18, "nimig18"); // awful
+
+    log_sqrt(fast::sqrt::stl, "stl");
+    log_sqrt(fast::sqrt::bigtailwolf, "bigtailwolf");
+    log_sqrt(fast::sqrt::nimig18, "nimig18");
     */
 }

@@ -1,6 +1,10 @@
+namespace fast {
+namespace sqrt {
+
+static inline float stl(float x) noexcept { return std::sqrt(x); }
+
 // https://stackoverflow.com/a/18662665
-float bigtailwolf(float x)
-{
+static inline float bigtailwolf(float x) noexcept {
     unsigned int i = *(unsigned int*) &x;
 
     // adjust bias
@@ -11,16 +15,17 @@ float bigtailwolf(float x)
     return *(float*) &i;
 }
 
+// much slower than stl
 // https://stackoverflow.com/a/43176496
-float nimig18(float x) noexcept {
+static inline float nimig18(float x) noexcept {
     union {float f; int i; } X, Y;
     float ScOff;
     uint8_t e;
 
     X.f = x;
-    e = (X.i >> 23);           // f.SFPbits.e;
+    e = X.i >> 23;           // f.SFPbits.e;
 
-    if(x <= 0) return(0.0f);
+    // if(x <= 0) return(0.0f);
 
     ScOff = ((e & 1) != 0) ? 1.0f : 0x1.6a09e6p0;  // NOTE: If exp=EVEN, b/c (exp-127) a (EVEN - ODD) := ODD; but a (ODD - ODD) := EVEN!!
 
@@ -37,5 +42,8 @@ float nimig18(float x) noexcept {
     // Y.f *= ScOff * (0x4.4a17fp-4 + X.f*(0x1.22d44p0 + X.f*(-0xa.972e8p-4 + X.f*(0x5.dd53fp-4 + X.f*(-0x2.273c08p-4 + X.f*(0x7.466cb8p-8 + X.f*(-0xa.ac00ep-12)))))));    // Error = +-2.9e-7 * 2^(flr(log2(x)/2))
     Y.f *= ScOff * (0x3.fbb3e8p-4 + X.f*(0x1.3b2a3cp0 + X.f*(-0xd.cbb39p-4 + X.f*(0x9.9444ep-4 + X.f*(-0x4.b5ea38p-4 + X.f*(0x1.802f9ep-4 + X.f*(-0x4.6f0adp-8 + X.f*(0x5.c24a28p-12 ))))))));   // Error = +-2.7e-6 * 2^(flr(log2(x)/2))
 
-    return(Y.f);
+    return Y.f;
 }
+
+} // namespace sqrt
+} // namespace fast
