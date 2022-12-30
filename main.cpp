@@ -313,6 +313,8 @@ int main() {
     benchmark(fast::cos::juha, "juha");
     benchmark(fast::cos::mineiro, "mineiro");
     benchmark(fast::cos::mineiro_faster, "mineiro_faster");
+    benchmark(fast::cos::wildmagic0, "wildmagic0");
+    benchmark(fast::cos::wildmagic1, "wildmagic1");
 
     log_sin(fast::cos::stl<float>, "stl");
     log_sin(fast::cos::pade<float>, "pade");
@@ -321,6 +323,8 @@ int main() {
     log_sin(fast::cos::juha, "juha");
     log_sin(fast::cos::mineiro, "mineiro");
     log_sin(fast::cos::mineiro_faster, "mineiro_faster");
+    log_sin(fast::cos::wildmagic0, "wildmagic0");
+    log_sin(fast::cos::wildmagic1, "wildmagic1");
     */
 
     /** TANH */

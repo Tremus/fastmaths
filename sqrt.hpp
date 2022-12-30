@@ -18,9 +18,9 @@ static inline float bigtailwolf(float x) noexcept {
 // much slower than stl
 // https://stackoverflow.com/a/43176496
 static inline float nimig18(float x) noexcept {
-    union {float f; int i; } X, Y;
+    union {float f; uint32_t i; } X, Y;
     float ScOff;
-    uint8_t e;
+    uint32_t e;
 
     X.f = x;
     e = X.i >> 23;           // f.SFPbits.e;

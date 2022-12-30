@@ -59,6 +59,31 @@ static inline float mineiro_faster (float x)
     return qpprox + p * qpprox * (1.0f - qpprox * qpprox);
 }
 
+// https://www.musicdsp.org/en/latest/Other/115-sin-cos-tan-approximation.html
+float wildmagic0 (float fAngle) noexcept {
+    float fASqr = fAngle * fAngle;
+    float fResult = 3.705e-02f;
+    fResult *= fASqr;
+    fResult -= 4.967e-01f;
+    fResult *= fASqr;
+    fResult += 1.0f;
+    return fResult;
+}
+float wildmagic1 (float fAngle) noexcept {
+    float fASqr = fAngle * fAngle;
+    float fResult = -2.605e-07f;
+    fResult *= fASqr;
+    fResult += 2.47609e-05f;
+    fResult *= fASqr;
+    fResult -= 1.3888397e-03f;
+    fResult *= fASqr;
+    fResult += 4.16666418e-02f;
+    fResult *= fASqr;
+    fResult -= 4.999999963e-01f;
+    fResult *= fASqr;
+    fResult += 1.0f;
+    return fResult;
+}
 
 } // namespace cos
 } // namespace fast
