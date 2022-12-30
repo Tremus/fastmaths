@@ -5,17 +5,19 @@
 #include <random>
 
 #include "common.hpp"
-#include "sin.hpp"
+
 #include "cos.hpp"
-#include "tanh.hpp"
+#include "exp.hpp"
+#include "exp2.hpp"
+#include "exp10.hpp"
 #include "log.hpp"
 #include "log2.hpp"
 #include "log10.hpp"
 #include "pow.hpp"
-#include "exp.hpp"
-#include "exp2.hpp"
-#include "exp10.hpp"
+#include "sin.hpp"
 #include "sqrt.hpp"
+#include "tan.hpp"
+#include "tanh.hpp"
 
 
 template <typename F, typename S>
@@ -221,6 +223,29 @@ void log_tanh(F tanh_func, S name) noexcept {
 }
 
 template <typename F, typename S>
+void log_tan(F tan_func, S name) noexcept {
+    constexpr float frequencies[] = {
+        10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f,
+        100.0f, 200.0f, 300.0f, 400.0f, 500.0f, 600.0f, 700.0f, 800.0f, 900.0f,
+        1000.0f, 2000.0f, 3000.0f, 4000.0f, 5000.0f, 6000.0f, 7000.0f, 8000.0f, 9000.0f,
+        10'000.0f, 11'000.0f, 12'000.0f, 13'000.0f, 14'000.0f, 15'000.0f, 16'000.0f, 17'000.0f, 18'000.0f, 19'000.0f,
+        20'000.0f,
+    };
+
+    std::cout << name << " = [";
+
+    const float sampleRate = 44100.0f;
+    for (const float fc : frequencies) {
+        // wc = pi * fc / fs
+        float wc = static_cast<float>(M_PI) * fc / sampleRate;
+        float g = tan_func(wc);
+        std::cout << std::setprecision(12) << g << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+
+template <typename F, typename S>
 void log_sqrt(F sqrt_func, S name) noexcept {
     constexpr float values[] = {
          0.0f,  0.1f,  0.2f,  0.3f,  0.4f,  0.5f,  0.6f,  0.7f,  0.8f,  0.9f,
@@ -325,6 +350,30 @@ int main() {
     log_sin(fast::cos::mineiro_faster, "mineiro_faster");
     log_sin(fast::cos::wildmagic0, "wildmagic0");
     log_sin(fast::cos::wildmagic1, "wildmagic1");
+    */
+
+    /** TAN */
+    /**
+    benchmark(fast::tan::stl, "stl");
+    benchmark(fast::tan::pade, "pade");
+    benchmark(fast::tan::wildmagic0, "wildmagic0");
+    benchmark(fast::tan::wildmagic1, "wildmagic1");
+    benchmark(fast::tan::jrus_alt, "jrus_alt");
+    benchmark(fast::tan::jrus_alt_denorm, "jrus_alt_denorm");
+    benchmark(fast::tan::jrus_denorm, "jrus_denorm");
+    benchmark(fast::tan::jrus_full_denorm, "jrus_full_denorm");
+    benchmark(fast::tan::kay, "kay");
+    benchmark(fast::tan::kay_precise, "kay_precise");
+
+    log_tan(fast::tan::stl, "stl");
+    log_tan(fast::tan::pade, "pade");
+    log_tan(fast::tan::wildmagic0, "wildmagic0");
+    log_tan(fast::tan::wildmagic1, "wildmagic1");
+    log_tan(fast::tan::jrus_alt_denorm, "jrus_alt_denorm");
+    log_tan(fast::tan::jrus_denorm, "jrus_denorm");
+    log_tan(fast::tan::jrus_full_denorm, "jrus_full_denorm");
+    log_tan(fast::tan::kay, "kay");
+    log_tan(fast::tan::kay_precise, "kay_precise");
     */
 
     /** TANH */

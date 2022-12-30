@@ -67,7 +67,7 @@ x_labels = [1,     2,    5,
             10000, 20000]
 x_ticks = [i for i in range(len(x_labels))]
 
-plt.xlabel('Frequencyy in Hz')
+plt.xlabel('Frequency in Hz')
 plt.xticks(ticks=x_ticks, labels=x_labels)
 plt.ylabel('midi note number')
 

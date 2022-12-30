@@ -3,12 +3,7 @@ import numpy as np
 import math
 
 """
-tanh is popular in bounded saturation algorithms, but is also
-seen in calculating filter coefficients (and also AI).
-
-In generating filter coefficients, high accuracy is needed
-else the cutoff could be too far from it's desired position.
-This makes the padé algorithm a great choice
+tanh is popular in bounded saturation algorithms (also AI).
 
 In sturation, destroying signals is often a good thing, and
 the signal is often boosten to the nth degree. Each of the
