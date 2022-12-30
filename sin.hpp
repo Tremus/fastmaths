@@ -242,5 +242,34 @@ constexpr T njuffa (T x) noexcept {
     return (quadrant & 2) ? -t : t;
 }
 
+// https://www.musicdsp.org/en/latest/Other/115-sin-cos-tan-approximation.html
+static inline float wildmagic0 (float fAngle) noexcept {
+    float fASqr = fAngle*fAngle;
+    float fResult = 7.61e-03f;
+    fResult *= fASqr;
+    fResult -= 1.6605e-01f;
+    fResult *= fASqr;
+    fResult += 1.0f;
+    fResult *= fAngle;
+    return fResult;
+}
+//----------------------------------------------------------------------
+static inline float wildmagic1 (float fAngle) noexcept {
+    float fASqr = fAngle*fAngle;
+    float fResult = -2.39e-08f;
+    fResult *= fASqr;
+    fResult += 2.7526e-06f;
+    fResult *= fASqr;
+    fResult -= 1.98409e-04f;
+    fResult *= fASqr;
+    fResult += 8.3333315e-03f;
+    fResult *= fASqr;
+    fResult -= 1.666666664e-01f;
+    fResult *= fASqr;
+    fResult += 1.0f;
+    fResult *= fAngle;
+    return fResult;
+}
+
 } // namespace sin
 } // namespace fast

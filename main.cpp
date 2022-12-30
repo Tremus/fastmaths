@@ -285,6 +285,8 @@ int main() {
     benchmark(fast::sin::mineiro_full, "mineiro_full");
     benchmark(fast::sin::mineiro_full_faster, "mineiro_full_faster");
     benchmark(fast::sin::njuffa<float>, "njuffa");
+    benchmark(fast::sin::wildmagic0, "wildmagic0");
+    benchmark(fast::sin::wildmagic1, "wildmagic1");
 
     log_sin(fast::sin::stl, "stl");
     log_sin(fast::sin::bhaskara_radians<float>, "bhaskara_radians");
@@ -298,6 +300,8 @@ int main() {
     log_sin(fast::sin::mineiro_full, "mineiro_full");
     log_sin(fast::sin::mineiro_full_faster, "mineiro_full_faster");
     log_sin(fast::sin::njuffa<float>, "njuffa");
+    log_sin(fast::sin::wildmagic0, "wildmagic0");
+    log_sin(fast::sin::wildmagic1, "wildmagic1");
     */
 
     /** COS */
