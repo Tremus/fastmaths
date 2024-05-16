@@ -40,6 +40,26 @@ void log_hz_to_midi (F log2_func, S name) {
 }
 
 template <typename F, typename S>
+void log_ratio_to_midi_offset (F log2_func, S name) {
+    constexpr float ratios[] = {
+        0.125f, 0.25f, 0.5f,
+        1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f, 9.0f, 10.0f,
+        11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f,
+        21.0f, 22.0f, 23.0f, 24.0f, 25.0f, 26.0f, 27.0f, 28.0f, 29.0f,
+        31.0f, 32.0f, 33.0f, 34.0f, 35.0f, 36.0f, 37.0f, 38.0f, 39.0f,
+        41.0f, 42.0f, 43.0f, 44.0f, 45.0f, 46.0f, 47.0f, 48.0f
+    };
+    std::cout << name << " = [";
+
+    auto ratio_to_midi_offset = [=](float r) { return log2_func(r) * 12; };
+
+    for (const float r : ratios) {
+        std::cout << std::setprecision(12) << ratio_to_midi_offset(r) << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+template <typename F, typename S>
 void log_midi_to_hz (F pow2_func, S name) {
     constexpr float midi_notes[] = {
         -36.376312f, // 1Hz
@@ -419,7 +439,7 @@ int main() {
 
     /** LOG2 */
     /**
-    benchmark(fast::log2::stl<float>, "stl");
+    benchmark(fast::log2::stl, "stl");
     benchmark(fast::log2::lgeoffroy, "lgeoffroy");
     benchmark(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
     benchmark(fast::log2::jcook, "jcook");
@@ -431,10 +451,8 @@ int main() {
     benchmark(fast::log2::log1_njuffa_faster, "log1_njuffa_faster");
     benchmark(fast::log2::log1_ankerl32, "log1_ankerl32");
     benchmark(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
-    benchmark(fast::log2::log1_mineiro, "log1_mineiro");
-    benchmark(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
 
-    log_hz_to_midi(fast::log2::stl<float>, "stl");
+    log_hz_to_midi(fast::log2::stl, "stl");
     log_hz_to_midi(fast::log2::lgeoffroy, "lgeoffroy");
     log_hz_to_midi(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
     log_hz_to_midi(fast::log2::jcook, "jcook");
@@ -446,9 +464,21 @@ int main() {
     log_hz_to_midi(fast::log2::log1_njuffa_faster, "log1_njuffa_faster");
     log_hz_to_midi(fast::log2::log1_ankerl32, "log1_ankerl32");
     log_hz_to_midi(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
-    log_hz_to_midi(fast::log2::log1_mineiro, "log1_mineiro");
-    log_hz_to_midi(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
     */
+
+    log_ratio_to_midi_offset(fast::log2::stl, "stl");
+    log_ratio_to_midi_offset(fast::log2::lgeoffroy, "lgeoffroy");
+    log_ratio_to_midi_offset(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
+    log_ratio_to_midi_offset(fast::log2::jcook, "jcook");
+    log_ratio_to_midi_offset(fast::log2::mineiro, "mineiro");
+    log_ratio_to_midi_offset(fast::log2::mineiro_faster, "mineiro_faster");
+    log_ratio_to_midi_offset(fast::log2::newton, "newton");
+    log_ratio_to_midi_offset(fast::log2::desoras, "desoras");
+    log_ratio_to_midi_offset(fast::log2::log1_njuffa, "log1_njuffa");
+    log_ratio_to_midi_offset(fast::log2::log1_njuffa_faster, "log1_njuffa_faster");
+    log_ratio_to_midi_offset(fast::log2::log1_ankerl32, "log1_ankerl32");
+    log_ratio_to_midi_offset(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
+    log_ratio_to_midi_offset(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
 
     /** LOG10 */
     /*

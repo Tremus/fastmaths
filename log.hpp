@@ -96,6 +96,7 @@ static inline double ankerl64(double a) noexcept {
     return (u.x[1] - 1072632447) * 6.610368362777016e-7; /* 1 / 1512775.0; */
 }
 
+// https://martin.ankerl.com/2007/10/04/optimized-pow-approximation-for-java-and-c-c/
 // https://github.com/ekmett/approximate/blob/master/cbits/fast.c
 /* 1065353216 - 486411 = 1064866805 */
 static inline float ankerl32(float a) noexcept {
