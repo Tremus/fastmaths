@@ -271,5 +271,36 @@ static inline float wildmagic1 (float fAngle) noexcept {
     return fResult;
 }
 
+// in [-1,1], out [-0.25, 0.25]
+// https://bmtechjournal.wordpress.com/2020/05/27/super-fast-quadratic-sinusoid-approximation/
+static inline float bluemangoo_original(float x)
+{
+    return -x * fabsf(x) + x;
+}
+// in [-pi,pi], out [-1,1]
+static inline float bluemangoo(float x)
+{
+    float x2 = x * float(M_1_PI);
+    float y = -x2 * fabsf(x2) + x2;
+    return 4 * y;
+}
+
+// [0, 2] corresponding to [0, pi]
+// https://github.com/LancePutnam/Gamma/blob/0ab245147c8bbebe1e96eb301e52ebb47c8c1c60/Gamma/scl.h#L963
+static float lanceputnam_gamma_original(float x)
+{
+    float y = x * (2.0f - x);
+	return y * (0.775f + 0.225f * y);
+}
+// More forgiving inputs
+// [-pi, pi]
+static float lanceputnam_gamma(float x)
+{
+    float ax = fabsf(x * float(M_2_PI));
+    float y = ax * (2.0f - ax);
+	y = y * (0.775f + 0.225f * y);
+    return x < 0 ? -y : y;
+}
+
 } // namespace sin
 } // namespace fast

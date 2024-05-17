@@ -309,7 +309,6 @@ int main() {
     benchmark([](float x) { return x * x; }, "x^2");
 
     /** SINE */
-    /**
     benchmark(fast::sin::stl, "stl");
     // benchmark(fast::sin::taylor<float, 5>, "taylor 5");
     // benchmark(fast::sin::taylor<float, 9>, "taylor 9");
@@ -332,6 +331,8 @@ int main() {
     benchmark(fast::sin::njuffa<float>, "njuffa");
     benchmark(fast::sin::wildmagic0, "wildmagic0");
     benchmark(fast::sin::wildmagic1, "wildmagic1");
+    benchmark(fast::sin::bluemangoo, "bluemangoo");
+    benchmark(fast::sin::lanceputnam_gamma, "lanceputnam_gamma");
 
     log_sin(fast::sin::stl, "stl");
     log_sin(fast::sin::bhaskara_radians<float>, "bhaskara_radians");
@@ -347,7 +348,8 @@ int main() {
     log_sin(fast::sin::njuffa<float>, "njuffa");
     log_sin(fast::sin::wildmagic0, "wildmagic0");
     log_sin(fast::sin::wildmagic1, "wildmagic1");
-    */
+    log_sin(fast::sin::bluemangoo, "bluemangoo");
+    log_sin(fast::sin::lanceputnam_gamma, "lanceputnam_gamma");
 
     /** COS */
     /**
@@ -466,6 +468,7 @@ int main() {
     log_hz_to_midi(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
     */
 
+    /*
     log_ratio_to_midi_offset(fast::log2::stl, "stl");
     log_ratio_to_midi_offset(fast::log2::lgeoffroy, "lgeoffroy");
     log_ratio_to_midi_offset(fast::log2::lgeoffroy_accurate, "lgeoffroy_accurate");
@@ -479,6 +482,7 @@ int main() {
     log_ratio_to_midi_offset(fast::log2::log1_ankerl32, "log1_ankerl32");
     log_ratio_to_midi_offset(fast::log2::log1_ekmett_lb, "log1_ekmett_lb");
     log_ratio_to_midi_offset(fast::log2::log1_mineiro_faster, "log1_mineiro_faster");
+    */
 
     /** LOG10 */
     /*
